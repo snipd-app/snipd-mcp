@@ -1,0 +1,16 @@
+# Codex-only sidecar (other agents ignore this file).
+interface:
+  display_name: "Import YouTube video into Snipd"
+  short_description: "Download a YouTube video's audio and upload it to Snipd"
+  default_prompt: "Use $upload-youtube-video to import this YouTube video into my Snipd account."
+
+policy:
+  allow_implicit_invocation: true
+
+dependencies:
+  tools:
+    - type: "mcp"
+      value: "snipd"
+      description: "Snipd MCP server: uploads, snips, subscriptions, episodes, feeds, history and play queue of the signed-in user"
+      transport: "streamable_http"
+      url: "https://mcp.snipd.com/mcp"

@@ -1,0 +1,29 @@
+{
+  "name": "snipd-app",
+  "owner": {
+    "name": "Snipd",
+    "url": "https://www.snipd.com"
+  },
+  "description": "Snipd for Claude Code: your podcasts, snips, episodes, feeds, history, play queue and uploads.",
+  "plugins": [
+    {
+      "name": "snipd",
+      "source": "./",
+      "description": "Connect Claude to your Snipd account: read, delete and tag your podcast snips and notes, browse and manage the podcasts you follow, open episodes (details, transcripts, AI snips), see your feeds and history, control your play queue, and upload your own audio (Premium).",
+      "category": "productivity",
+      "homepage": "https://github.com/snipd-app/snipd-mcp",
+      "keywords": [
+        "snipd",
+        "podcast",
+        "snips",
+        "highlights",
+        "notes",
+        "subscriptions",
+        "episodes",
+        "transcripts",
+        "queue",
+        "mcp"
+      ]
+    }
+  ]
+}

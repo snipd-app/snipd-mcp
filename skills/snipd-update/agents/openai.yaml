@@ -1,0 +1,9 @@
+# Codex-only sidecar (other agents ignore this file). No `dependencies` here on purpose: updating the
+# plugin must work before the MCP server is added, and it needs no Snipd tools.
+interface:
+  display_name: "Update Snipd"
+  short_description: "Update the Snipd plugin to the latest version"
+  default_prompt: "Use $snipd-update to update my Snipd plugin."
+
+policy:
+  allow_implicit_invocation: true

@@ -1,0 +1,51 @@
+{
+  "name": "snipd",
+  "version": "0.7.0",
+  "description": "Connect Codex to your Snipd account: read, delete and tag your podcast snips and notes, browse and manage the podcasts you follow, open episodes (details, transcripts, AI snips), see your feeds and history, control your play queue, and upload your own audio (Premium).",
+  "author": {
+    "name": "Snipd",
+    "url": "https://www.snipd.com"
+  },
+  "homepage": "https://github.com/snipd-app/snipd-mcp",
+  "repository": "https://github.com/snipd-app/snipd-mcp",
+  "keywords": [
+    "snipd",
+    "podcast",
+    "snips",
+    "highlights",
+    "notes",
+    "subscriptions",
+    "episodes",
+    "transcripts",
+    "queue",
+    "mcp"
+  ],
+  "skills": "./skills/",
+  "mcpServers": "./.mcp.json",
+  "interface": {
+    "displayName": "Snipd",
+    "shortDescription": "Your podcasts in Snipd: snips, subscriptions, episodes, feeds, history, queue and uploads.",
+    "longDescription": "Read the snips you saved in Snipd, with your notes, the AI summaries, the episode and show they come from, and your collections. Browse and manage the podcasts you follow, open any episode (details, transcript and AI snips where you have access), see your feeds and listen history, and control your play queue from your agent; your devices pick the changes up. Premium users can also upload audio files and YouTube videos into their Snipd library. Signs in with your Snipd account.",
+    "developerName": "Snipd",
+    "category": "Productivity",
+    "capabilities": [
+      "Read your snips and notes",
+      "Browse your collections",
+      "Browse and manage your subscriptions",
+      "Open episodes: details, transcripts and AI snips",
+      "See your feeds and listen history",
+      "Control your play queue",
+      "Upload audio files and YouTube videos (Premium)"
+    ],
+    "websiteURL": "https://www.snipd.com",
+    "brandColor": "#182060",
+    "composerIcon": "./assets/snipd-icon-128.png",
+    "logo": "./assets/snipd-icon.png",
+    "defaultPrompt": [
+      "Show my most recent Snipd snips grouped by episode",
+      "What is new in the podcasts I follow on Snipd?",
+      "Queue the latest episode of my favourite podcast next",
+      "Upload this audio file to my Snipd account"
+    ]
+  }
+}
