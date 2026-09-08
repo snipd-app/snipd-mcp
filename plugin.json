@@ -1,0 +1,58 @@
+{
+  "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
+  "name": "snipd",
+  "version": "0.8.0",
+  "description": "Connect your agent to your Snipd account: read, delete and tag your podcast snips and notes, browse and manage the podcasts you follow, open episodes (details, transcripts, AI snips), search moments across your podcasts, see your feeds and history, control your play queue, and upload your own audio or have text read aloud (Premium).",
+  "author": {
+    "name": "Snipd",
+    "url": "https://www.snipd.com"
+  },
+  "homepage": "https://www.snipd.com/mcp",
+  "repository": "https://github.com/snipd-app/snipd-mcp",
+  "license": "MIT",
+  "keywords": [
+    "snipd",
+    "podcast",
+    "snips",
+    "highlights",
+    "notes",
+    "subscriptions",
+    "episodes",
+    "transcripts",
+    "queue",
+    "mcp"
+  ],
+  "extensions": {
+    "com.openai": {
+      "interface": {
+        "displayName": "Snipd",
+        "shortDescription": "Your podcasts, snips and queue",
+        "longDescription": "Read the snips you saved in Snipd, with your notes, the AI summaries, the episode and show they come from, and your tags. Browse and manage the podcasts you follow, open any episode (details, transcript and AI snips where you have access), search for moments across the podcasts you follow or listened to, find the people who appear on them, see your feeds and listen history, and control your play queue from your agent; your devices pick the changes up. Premium users can also upload audio files and YouTube videos into their Snipd library, and have text read aloud (text-to-speech) as a private episode. Signs in with your Snipd account. Changes to your account (deleting or tagging snips, subscribing, the play queue, uploads) are only made after you confirm them.",
+        "developerName": "Snipd",
+        "category": "Productivity",
+        "capabilities": [
+          "Read your snips and notes",
+          "Tag and organize your snips",
+          "Browse and manage your subscriptions",
+          "Open episodes: details, transcripts and AI snips",
+          "Search moments across your podcasts",
+          "See your feeds and listen history",
+          "Control your play queue",
+          "Upload audio files and YouTube videos (Premium)"
+        ],
+        "websiteURL": "https://www.snipd.com/mcp",
+        "supportURL": "https://support.snipd.com",
+        "privacyPolicyURL": "https://www.snipd.com/privacy-policy",
+        "termsOfServiceURL": "https://www.snipd.com/terms-of-use",
+        "brandColor": "#182060",
+        "composerIcon": "./assets/snipd-icon-128.png",
+        "logo": "./assets/snipd-icon.png",
+        "defaultPrompt": [
+          "Show my most recent Snipd snips grouped by episode",
+          "What is new in the podcasts I follow on Snipd?",
+          "Queue the latest episode of my favourite podcast next"
+        ]
+      }
+    }
+  }
+}

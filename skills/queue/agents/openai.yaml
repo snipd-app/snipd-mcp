@@ -1,0 +1,17 @@
+# Codex-only sidecar (other agents ignore this file). `dependencies` declares the MCP server the skill
+# needs, so Codex offers to install it and runs the Snipd sign-in when the skill is used without it.
+interface:
+  display_name: "Snipd queue"
+  short_description: "See and change your Snipd play queue"
+  default_prompt: "Use $queue to show what is in my Snipd play queue."
+
+policy:
+  allow_implicit_invocation: true
+
+dependencies:
+  tools:
+    - type: "mcp"
+      value: "snipd"
+      description: "Snipd MCP server: the signed-in user's play queue, subscriptions, episodes and snips"
+      transport: "streamable_http"
+      url: "https://mcp.snipd.com/mcp"

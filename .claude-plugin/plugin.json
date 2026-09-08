@@ -1,0 +1,30 @@
+{
+  "name": "snipd",
+  "displayName": "Snipd",
+  "version": "0.8.0",
+  "description": "Connect Claude to your Snipd account: read, delete and tag your podcast snips and notes, browse and manage the podcasts you follow, open episodes (details, transcripts, AI snips), search moments across your podcasts, see your feeds and history, control your play queue, and upload your own audio or have text read aloud (Premium).",
+  "author": {
+    "name": "Snipd",
+    "url": "https://www.snipd.com"
+  },
+  "homepage": "https://www.snipd.com/mcp",
+  "repository": "https://github.com/snipd-app/snipd-mcp",
+  "license": "MIT",
+  "icon": "./assets/snipd-icon.png",
+  "documentationUrl": "https://www.snipd.com/mcp",
+  "supportUrl": "https://support.snipd.com",
+  "privacyPolicyUrl": "https://www.snipd.com/privacy-policy",
+  "termsOfServiceUrl": "https://www.snipd.com/terms-of-use",
+  "keywords": [
+    "snipd",
+    "podcast",
+    "snips",
+    "highlights",
+    "notes",
+    "subscriptions",
+    "episodes",
+    "transcripts",
+    "queue",
+    "mcp"
+  ]
+}

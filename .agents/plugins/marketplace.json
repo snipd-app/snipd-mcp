@@ -1,0 +1,12 @@
+{
+  "name": "snipd-app",
+  "interface": { "displayName": "Snipd" },
+  "plugins": [
+    {
+      "name": "snipd",
+      "source": { "source": "local", "path": "./" },
+      "policy": { "installation": "AVAILABLE", "authentication": "ON_INSTALL" },
+      "category": "Productivity"
+    }
+  ]
+}

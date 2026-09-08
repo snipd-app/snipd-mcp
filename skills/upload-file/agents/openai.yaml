@@ -1,0 +1,16 @@
+# Codex-only sidecar (other agents ignore this file).
+interface:
+  display_name: "Upload file to Snipd"
+  short_description: "Upload a local audio or video file into Snipd"
+  default_prompt: "Use $upload-file to upload this audio file to my Snipd account."
+
+policy:
+  allow_implicit_invocation: true
+
+dependencies:
+  tools:
+    - type: "mcp"
+      value: "snipd"
+      description: "Snipd MCP server: uploads, snips, subscriptions, episodes, feeds, history and play queue of the signed-in user"
+      transport: "streamable_http"
+      url: "https://mcp.snipd.com/mcp"

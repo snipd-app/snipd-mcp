@@ -1,0 +1,16 @@
+# Codex-only sidecar (other agents ignore this file).
+interface:
+  display_name: "Check pending Snipd uploads"
+  short_description: "See which uploads are still processing or failed"
+  default_prompt: "Use $upload-check-pending to check on my Snipd uploads."
+
+policy:
+  allow_implicit_invocation: true
+
+dependencies:
+  tools:
+    - type: "mcp"
+      value: "snipd"
+      description: "Snipd MCP server: uploads, snips, subscriptions, episodes, feeds, history and play queue of the signed-in user"
+      transport: "streamable_http"
+      url: "https://mcp.snipd.com/mcp"
