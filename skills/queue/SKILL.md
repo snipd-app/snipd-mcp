@@ -1,6 +1,7 @@
 ---
 name: queue
-description: Use when the user wants to see or change their Snipd play queue: what is queued or playing, queue an episode, play something next or now, remove episodes from the queue.
+description: >-
+  Use when the user wants to see or change their Snipd play queue: what is queued or playing, queue an episode, play something next or now, remove episodes from the queue.
 compatibility: Needs the Snipd MCP server (remote, signs in with the user's Snipd account). Changes the user's play queue; the user's devices pick the change up within seconds.
 metadata:
   mcp-server-url: https://mcp.snipd.com/mcp

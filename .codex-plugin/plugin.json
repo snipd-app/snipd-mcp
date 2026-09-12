@@ -1,7 +1,7 @@
 {
   "name": "snipd",
-  "version": "0.7.0",
-  "description": "Connect Codex to your Snipd account: read, delete and tag your podcast snips and notes, browse and manage the podcasts you follow, open episodes (details, transcripts, AI snips), see your feeds and history, control your play queue, and upload your own audio (Premium).",
+  "version": "0.8.0",
+  "description": "Connect Codex to your Snipd account: read, delete and tag your podcast snips and notes, browse and manage the podcasts you follow, search moments in your subscriptions and listen history, open episodes (details, transcripts, AI snips), see your feeds and history, control your play queue, and upload your own audio (Snipd Premium).",
   "author": {
     "name": "Snipd",
     "url": "https://www.snipd.com"
@@ -25,17 +25,18 @@
   "interface": {
     "displayName": "Snipd",
     "shortDescription": "Your podcasts in Snipd: snips, subscriptions, episodes, feeds, history, queue and uploads.",
-    "longDescription": "Read the snips you saved in Snipd, with your notes, the AI summaries, the episode and show they come from, and your collections. Browse and manage the podcasts you follow, open any episode (details, transcript and AI snips where you have access), see your feeds and listen history, and control your play queue from your agent; your devices pick the changes up. Premium users can also upload audio files and YouTube videos into their Snipd library. Signs in with your Snipd account.",
+    "longDescription": "Read the snips you saved in Snipd, with your notes, the AI summaries, the episode and show they come from, and your collections. Browse and manage the podcasts you follow, open any episode (details, transcript and AI snips where you have access), see your feeds and listen history, and control your play queue from your agent; your devices pick the changes up. Snipd Premium users can also upload audio files and YouTube videos into their Snipd library. Signs in with your Snipd account.",
     "developerName": "Snipd",
     "category": "Productivity",
     "capabilities": [
       "Read your snips and notes",
       "Browse your collections",
       "Browse and manage your subscriptions",
+      "Search moments in your subscriptions and listen history",
       "Open episodes: details, transcripts and AI snips",
       "See your feeds and listen history",
       "Control your play queue",
-      "Upload audio files and YouTube videos (Premium)"
+      "Upload audio files and YouTube videos (Snipd Premium)"
     ],
     "websiteURL": "https://www.snipd.com",
     "brandColor": "#182060",

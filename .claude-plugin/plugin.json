@@ -1,8 +1,8 @@
 {
   "name": "snipd",
   "displayName": "Snipd",
-  "version": "0.7.0",
-  "description": "Connect Claude to your Snipd account: read, delete and tag your podcast snips and notes, browse and manage the podcasts you follow, open episodes (details, transcripts, AI snips), see your feeds and history, control your play queue, and upload your own audio (Premium).",
+  "version": "0.8.0",
+  "description": "Connect Claude to your Snipd account: read, delete and tag your podcast snips and notes, browse and manage the podcasts you follow, search moments in your subscriptions and listen history, open episodes (details, transcripts, AI snips), see your feeds and history, control your play queue, and upload your own audio (Snipd Premium).",
   "author": {
     "name": "Snipd",
     "url": "https://www.snipd.com"
