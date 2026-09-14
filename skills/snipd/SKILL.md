@@ -137,7 +137,7 @@ Use `subscriptions_search_moments` for a topic across followed public podcasts a
 These tools require Snipd Premium and use embedding-based semantic search over transcripts: describe the topic,
 idea or moment to find.
 
-Request 1–50 chunks (default 10). Expect roughly 18,000 tokens for 10 chunks.
+Request 1–20 chunks (default 10). Expect roughly 18,000 tokens for 10 chunks.
 Results include transcript passages with speakers, timestamps, episode titles, IDs and
 links. Overlapping passages are combined.
 Cite the returned episode links when using these passages.
