@@ -88,8 +88,8 @@ above. Available on Plus, Pro, Business, Enterprise and Edu plans (web).
 | `snips_create_tag`, `snips_remove_tag` | Creates an empty tag, or deletes one from your account: it comes off every snip that carried it, and the snips are kept. The agent asks before deleting one. |
 | `subscriptions_list` | The podcasts you follow, all at once, the one with the newest episode first, each with when you subscribed and whether you get new-episode notifications. |
 | `subscriptions_latest_episodes` | What is new in the podcasts you follow, newest first, leaving out episodes you finished or archived (like the app's Latest feed). Paged. |
-| `subscriptions_search_moments(query, limit=10)` | Find moments across public podcasts you follow using embedding-based semantic search of episode transcripts. Requires Snipd Premium. |
-| `listen_history_search_moments(query, limit=10)` | Find moments across public podcast episodes in your listen history using embedding-based semantic search of their transcripts. Requires Snipd Premium. |
+| `subscriptions_search_moments` | Find moments across public podcasts you follow using embedding-based semantic search of episode transcripts. Filter by publication date or people. Requires Snipd Premium. |
+| `listen_history_search_moments` | Find moments across public podcast episodes in your listen history using embedding-based semantic search of their transcripts. Filter by publication date, when you first listened, or people. Requires Snipd Premium. |
 | `subscriptions_add`, `subscriptions_remove` | Follow a show by id or RSS feed URL (unknown feeds are imported first), or unfollow shows. The agent asks before calling them. |
 | `shows_details`, `shows_episodes` | A show as its page in the app, and its episodes with the app's filters (sort, title search, play status, archived). |
 | `episodes_details`, `episodes_transcript`, `episodes_ai_summaries` | An episode as its page in the app, its transcript as speaker turns (the whole thing, or a window of it), and the AI snips the app shows. Transcript and AI snips follow the app's AI-access rule: free-for-all episodes, Snipd Premium, or episodes you unlocked in the app. |
@@ -99,6 +99,18 @@ above. Available on Plus, Pro, Business, Enterprise and Edu plans (web).
 | `uploads_initiate` | Snipd Premium only. Reserves upload space and returns a signed URL the agent PUTs a local audio/video file to; the file becomes an episode once Snipd has processed it. |
 | `uploads_list` | Pending uploads (uploading, processing, error) and processed ones grouped by folder, plus the upload quota. |
 | `uploads_delete` | Deletes a pending upload. |
+
+## Filtering moment searches
+
+Both search tools accept `query`, `limit` (default 10, maximum 20), and optional
+`publish_date_min`, `publish_date_max` and `person_ids`. Dates use `YYYY-MM-DD`
+and include the supplied day, in UTC. A person filter matches episodes featuring
+any listed person as a guest or host. Results include guest names and person IDs
+so you can narrow a follow-up search to a guest.
+
+`listen_history_search_moments` also accepts `first_listen_date_min` and
+`first_listen_date_max` to filter by when you first listened to an episode.
+All supplied filters apply together.
 
 ## Repository layout
 
@@ -143,6 +155,7 @@ once at the end of setup rather than leaving the user to discover it.
 
 | Plugin | Server | What changed |
 |---|---|---|
+| 0.9.0 | 0.7.0 | Filter moment searches by publication date, first-listened date and people; results include guest person IDs. |
 | 0.8.0 | 0.7.0 | Search moments in your subscriptions and listen history, with transcript passages and episode links (Snipd Premium). |
 | 0.7.0 | 0.6.0 | `snipd-update` skill: update the plugin from either agent, and offer Claude Code auto-update. `snipd-connect` now raises it once after a successful sign-in. |
 | 0.6.0 | 0.6.0 | Snips can be changed, not only read: `snips_delete`, `snips_tag`, `snips_untag`, `snips_create_tag`, `snips_remove_tag`, and `snips_read_full` for the words of a snip. `episodes_transcript` no longer caps a read: with no bounds it returns the whole transcript, `start_seconds` alone reads to the end of the episode, and two bounds read exactly that stretch. |

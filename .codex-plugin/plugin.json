@@ -1,6 +1,6 @@
 {
   "name": "snipd",
-  "version": "0.8.0",
+  "version": "0.9.0",
   "description": "Connect Codex to your Snipd account: read, delete and tag your podcast snips and notes, browse and manage the podcasts you follow, search moments in your subscriptions and listen history, open episodes (details, transcripts, AI snips), see your feeds and history, control your play queue, and upload your own audio (Snipd Premium).",
   "author": {
     "name": "Snipd",

@@ -139,5 +139,14 @@ idea or moment to find.
 
 Request 1–20 chunks (default 10). Expect roughly 18,000 tokens for 10 chunks.
 Results include transcript passages with speakers, timestamps, episode titles, IDs and
-links. Overlapping passages are combined.
+links, plus guest names and person IDs. Overlapping passages are combined.
 Cite the returned episode links when using these passages.
+
+Both tools accept optional `publish_date_min` and `publish_date_max` filters.
+Use `YYYY-MM-DD` dates; both bounds include the supplied day, in UTC.
+For when the user first listened, use `first_listen_date_min` and
+`first_listen_date_max` on `listen_history_search_moments`.
+
+Use `person_ids` to search episodes featuring any of those people as a guest or host.
+Copy a guest's `person_id` from a search result to narrow a follow-up search to that person.
+Publication dates, first-listened dates and people filters apply together when provided.
