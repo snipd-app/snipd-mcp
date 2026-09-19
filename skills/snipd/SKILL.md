@@ -1,6 +1,6 @@
 ---
 name: snipd
-description: Use when the user mentions Snipd, their podcast snips, highlights, notes or tags (deleting, tagging and untagging them included), the podcasts they follow or subscribe to, what is new in their podcasts, a show or an episode (details, transcript, AI snips), their episode feeds or filters, or what they listened to.
+description: Use when the user mentions Snipd, their podcast snips, highlights, notes or tags (deleting, tagging and untagging them included), the podcasts they follow or subscribe to, what is new in their podcasts, a show or an episode (details, transcript, AI snips), their episode feeds or filters, what they listened to, or finding podcast guests and hosts.
 compatibility: Needs the Snipd MCP server (remote, signs in with the user's Snipd account). Mostly reads the user's data; deletes or tags snips and changes subscriptions only through the tools named for it, after confirmation. The play queue has its own skill.
 metadata:
   mcp-server-url: https://mcp.snipd.com/mcp
@@ -39,6 +39,7 @@ titles first through the listing tools.
 | `listen_history_search_moments(query, limit=10)` | Find moments across public podcast episodes in your listen history using embedding-based semantic search of their transcripts. Requires Snipd Premium. |
 | `subscriptions_add(show_id \| rss_feed_url, notifications_enabled)` | Subscribes the user to a show, by id or by RSS feed URL (unknown feeds are imported first, which takes a few seconds). Reports `already_subscribed` and, for RSS, `imported`. Ask first. |
 | `subscriptions_remove(show_ids)` | Unsubscribes from the given shows; ids the user did not follow come back as `not_subscribed`. Nothing else is deleted. Ask first. |
+| `people_search(query, search_by, min_snips=0)` | Find people on public podcasts by name (keyword search) or bio (embedding-based semantic search). Returns up to 20 matches with name, bio, person ID and snip count. |
 | `shows_details(show_id)` | The show as its page in the app: the compact fields plus description, owner, subcategories, funding link, counts of live episodes, snips (all users) and subscribers, and the user's `is_subscribed` / `notifications_enabled`. |
 | `shows_episodes(show_id, sort, search, play_status, include_archived, limit, offset)` | The episodes of one show with the app's show-page filters: `sort` newest (default), oldest, longest, shortest or most_snipped; `search` words that must all appear in the title; `play_status` all, not_started, started, not_completed or completed; archived episodes hidden unless `include_archived`. Public shows and the user's own private feeds / upload folders only. |
 | `episodes_details(episode_id)` | The episode as its page in the app: description, language, hosts and guests, chapters and AI takeaways (only with AI access), counts, `has_transcript`, `ai_access` (status and reason), `is_archived`, `is_favorite`, `is_queued` and the user's `listen_state`. |
@@ -129,6 +130,18 @@ that the content is locked, explain how to unlock it in the app and offer the pa
 - `snips_untag` takes a tag off some snips; `snips_remove_tag` deletes the tag itself, everywhere.
   They are easy to confuse: say which one you are about to do, and confirm the second.
 - Changes show up in the app the next time it syncs, not instantly.
+
+## Finding people
+
+Use `people_search` with `search_by="name"` for case-insensitive keyword search
+when you know a person's name. Use `search_by="bio"` for
+embedding-based semantic search by background or expertise, such as "robotics
+founder" or "medical doctor at Stanford". Every signed-in user can use it.
+
+Returns up to 20 people with `person_id`, `name`, `bio` and `total_snips`.
+`min_snips` accepts only 0 (no filter), 5, 50, 100, 250, 500, 1000, 2500 or 5000.
+Use returned person IDs in a moment search's `person_ids` filter to find what
+those people discussed.
 
 ## Finding moments in podcasts
 

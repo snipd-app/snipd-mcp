@@ -91,6 +91,7 @@ above. Available on Plus, Pro, Business, Enterprise and Edu plans (web).
 | `subscriptions_search_moments` | Find moments across public podcasts you follow using embedding-based semantic search of episode transcripts. Filter by publication date or people. Requires Snipd Premium. |
 | `listen_history_search_moments` | Find moments across public podcast episodes in your listen history using embedding-based semantic search of their transcripts. Filter by publication date, when you first listened, or people. Requires Snipd Premium. |
 | `subscriptions_add`, `subscriptions_remove` | Follow a show by id or RSS feed URL (unknown feeds are imported first), or unfollow shows. The agent asks before calling them. |
+| `people_search` | Find people on public podcasts by name (keyword search) or bio (embedding-based semantic search). Returns up to 20 matches with name, bio, person ID and snip count. |
 | `shows_details`, `shows_episodes` | A show as its page in the app, and its episodes with the app's filters (sort, title search, play status, archived). |
 | `episodes_details`, `episodes_transcript`, `episodes_ai_summaries` | An episode as its page in the app, its transcript as speaker turns (the whole thing, or a window of it), and the AI snips the app shows. Transcript and AI snips follow the app's AI-access rule: free-for-all episodes, Snipd Premium, or episodes you unlocked in the app. |
 | `filters_list`, `filters_episodes` | Your episode feeds (the app's tabs, standard and custom) and the episodes in one of them. |
@@ -111,6 +112,18 @@ so you can narrow a follow-up search to a guest.
 `listen_history_search_moments` also accepts `first_listen_date_min` and
 `first_listen_date_max` to filter by when you first listened to an episode.
 All supplied filters apply together.
+
+## Finding people
+
+Use `people_search(query, search_by, min_snips=0)` with `search_by="name"` when you
+know a name, or `search_by="bio"` to find people by
+background or expertise, such as "robotics founder". Name search is
+case-insensitive keyword search with fuzzy matching; bio search is embedding-based
+semantic search. Available to every signed-in Snipd user.
+
+`min_snips` accepts only **0, 5, 50, 100, 250, 500, 1000, 2500 or 5000**;
+0 applies no snip-count filter. Results include the numeric snip count and a
+`person_id` you can pass to the moment-search tools' `person_ids` filter.
 
 ## Repository layout
 
@@ -155,6 +168,7 @@ once at the end of setup rather than leaving the user to discover it.
 
 | Plugin | Server | What changed |
 |---|---|---|
+| 0.10.0 | 0.9.0 | Search people by name or bio, with minimum snip-count filters. |
 | 0.9.0 | 0.7.0 | Filter moment searches by publication date, first-listened date and people; results include guest person IDs. |
 | 0.8.0 | 0.7.0 | Search moments in your subscriptions and listen history, with transcript passages and episode links (Snipd Premium). |
 | 0.7.0 | 0.6.0 | `snipd-update` skill: update the plugin from either agent, and offer Claude Code auto-update. `snipd-connect` now raises it once after a successful sign-in. |
