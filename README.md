@@ -4,13 +4,12 @@ Connect your coding agent to your [Snipd](https://www.snipd.com) account and let
 podcasts: read, delete and tag your snips and notes, browse and manage the shows you follow, open episodes (details,
 transcripts and AI snips), see your feeds and listen history, control your play queue, and upload your
 own audio. This repository is the official install kit for the Snipd MCP server: a Claude Code
-plugin, a Codex plugin and six [Agent Skills](https://agentskills.io) that teach the agent what the
+plugin, a Codex plugin and seven [Agent Skills](https://agentskills.io) that teach the agent what the
 tools do and how to use them.
 
-The server is remote (nothing runs on your machine). Browsing never changes your account. Four
-things do, and the skills make the agent confirm with you first: deleting or tagging snips,
-subscribing and unsubscribing, changing the play queue (your devices pick it up within seconds), and
-uploads, which add episodes.
+The server is remote (nothing runs on your machine). Browsing never changes your account. Actions
+that do include deleting or tagging snips, subscribing or unsubscribing, changing the play queue
+(your devices pick it up within seconds), and adding episodes through uploads or Text to Podcast.
 You sign in with your Snipd account in the browser; disconnecting in your agent revokes its access.
 
 - MCP endpoint: `https://mcp.snipd.com/mcp`
@@ -100,6 +99,7 @@ above. Available on Plus, Pro, Business, Enterprise and Edu plans (web).
 | `uploads_initiate` | Snipd Premium only. Reserves upload space and returns a signed URL the agent PUTs a local audio/video file to; the file becomes an episode once Snipd has processed it. |
 | `uploads_list` | Pending uploads (uploading, processing, error) and processed ones grouped by folder, plus the upload quota. |
 | `uploads_delete` | Deletes a pending upload. |
+| `text_to_podcast` | Turns supplied text into a private Snipd Uploads episode, with optional speech editing for written articles and a cover image. Snipd Premium only. |
 
 ## Filtering moment searches
 
@@ -137,6 +137,7 @@ semantic search. Available to every signed-in Snipd user.
 | `skills/upload-file/SKILL.md` | Uploading a local audio/video file: options, `uploads_initiate`, the PUT, what to tell the user |
 | `skills/upload-youtube-video/SKILL.md` | Same for a YouTube video: yt-dlp (with consent) for metadata (title, channel, description, thumbnail, language) and the audio-only download, upload with the video URL |
 | `skills/upload-check-pending/SKILL.md` | Reporting pending uploads, explaining statuses, cleaning up stuck or failed ones |
+| `skills/create-podcast-from-web-article/SKILL.md` | Extracting a web article and creating a private Snipd podcast, with Snipd's optional speech editing for written articles; shared by Claude, Codex and other Agent Skills clients |
 | `skills/snipd-update/SKILL.md` | Updating the installed plugin, and turning on Claude Code auto-update. Shared by every agent |
 | `skills/*/agents/openai.yaml` | Codex-only sidecars that declare the MCP dependency so Codex offers to install it |
 

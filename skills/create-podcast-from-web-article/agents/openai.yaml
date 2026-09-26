@@ -1,0 +1,16 @@
+# Codex-only sidecar;
+interface:
+  display_name: "Create podcast from web article"
+  short_description: "Turn a web article into a private Snipd podcast"
+  default_prompt: "Use $create-podcast-from-web-article to turn this article into a private Snipd podcast: <URL>"
+
+policy:
+  allow_implicit_invocation: true
+
+dependencies:
+  tools:
+    - type: "mcp"
+      value: "snipd"
+      description: "Snipd MCP server: text_to_podcast creates a private episode in the signed-in user's Uploads folder inside the Snipd app"
+      transport: "streamable_http"
+      url: "https://mcp.snipd.com/mcp"
