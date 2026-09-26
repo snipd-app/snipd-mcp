@@ -169,6 +169,7 @@ once at the end of setup rather than leaving the user to discover it.
 
 | Plugin | Server | What changed |
 |---|---|---|
+| 0.11.0 | 0.9.0 | `create-podcast-from-web-article` skill: turn a web article into a private Snipd podcast, with optional speech editing. |
 | 0.10.0 | 0.9.0 | Search people by name or bio, with minimum snip-count filters. |
 | 0.9.0 | 0.7.0 | Filter moment searches by publication date, first-listened date and people; results include guest person IDs. |
 | 0.8.0 | 0.7.0 | Search moments in your subscriptions and listen history, with transcript passages and episode links (Snipd Premium). |
