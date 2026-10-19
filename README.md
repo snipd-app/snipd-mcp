@@ -1,10 +1,11 @@
 # Snipd for Claude Code, Codex and other agents
 
 Connect your coding agent to your [Snipd](https://www.snipd.com) account and let it work with your
-podcasts: read, delete and tag your snips and notes, browse and manage the shows you follow, open episodes (details,
+podcasts: read, delete and tag your snips and notes, browse and manage the shows you follow, search for
+moments in your subscriptions and listen history, find people by name or bio, open episodes (details,
 transcripts and AI snips), see your feeds and listen history, control your play queue, and upload your
 own audio. This repository is the official install kit for the Snipd MCP server: a Claude Code
-plugin, a Codex plugin and seven [Agent Skills](https://agentskills.io) that teach the agent what the
+plugin, a Codex plugin and eight [Agent Skills](https://agentskills.io) that teach the agent what the
 tools do and how to use them.
 
 The server is remote (nothing runs on your machine). Browsing never changes your account. Actions
@@ -87,8 +88,8 @@ above. Available on Plus, Pro, Business, Enterprise and Edu plans (web).
 | `snips_create_tag`, `snips_remove_tag` | Creates an empty tag, or deletes one from your account: it comes off every snip that carried it, and the snips are kept. The agent asks before deleting one. |
 | `subscriptions_list` | The podcasts you follow, all at once, the one with the newest episode first, each with when you subscribed and whether you get new-episode notifications. |
 | `subscriptions_latest_episodes` | What is new in the podcasts you follow, newest first, leaving out episodes you finished or archived (like the app's Latest feed). Paged. |
-| `subscriptions_search_moments` | Find moments across public podcasts you follow using embedding-based semantic search of episode transcripts. Filter by publication date or people. Requires Snipd Premium. |
-| `listen_history_search_moments` | Find moments across public podcast episodes in your listen history using embedding-based semantic search of their transcripts. Filter by publication date, when you first listened, or people. Requires Snipd Premium. |
+| `subscriptions_search_moments` | Find moments across public podcasts you follow using embedding-based semantic search of episode transcripts. Filter by publication date, people, language or snip count. Requires Snipd Premium. |
+| `listen_history_search_moments` | Find moments across public podcast episodes in your listen history using embedding-based semantic search of their transcripts. Filter by publication date, when you first listened, people, language or snip count. Requires Snipd Premium. |
 | `subscriptions_add`, `subscriptions_remove` | Follow a show by id or RSS feed URL (unknown feeds are imported first), or unfollow shows. The agent asks before calling them. |
 | `people_search` | Find people on public podcasts by name (keyword search) or bio (embedding-based semantic search). Returns up to 20 matches with name, bio, person ID and snip count. |
 | `shows_details`, `shows_episodes` | A show as its page in the app, and its episodes with the app's filters (sort, title search, play status, archived). |
@@ -103,11 +104,21 @@ above. Available on Plus, Pro, Business, Enterprise and Edu plans (web).
 
 ## Filtering moment searches
 
-Both search tools accept `query`, `limit` (default 10, maximum 20), and optional
-`publish_date_min`, `publish_date_max` and `person_ids`. Dates use `YYYY-MM-DD`
-and include the supplied day, in UTC. A person filter matches episodes featuring
-any listed person as a guest or host. Results include guest names and person IDs
-so you can narrow a follow-up search to a guest.
+Only episodes Snipd has AI-processed (including transcription) are searchable.
+
+Both search tools accept `query`, `limit` (default 10, maximum 20), and these optional filters:
+
+- `publish_date_min`, `publish_date_max`: dates use `YYYY-MM-DD` and include the
+  supplied day, in UTC.
+- `person_ids`: matches episodes featuring any listed person as a guest or host.
+  Results include guest names and person IDs so you can narrow a follow-up search
+  to a guest.
+- `languages`: matches episodes in any of these languages, given as two-letter
+  codes such as `"en"` or `"de"`.
+- `min_snips`: only episodes with at least this many snips, a popularity signal.
+  Accepts **0, 5, 50, 100, 250, 500, 1000 or 2500**; 0 applies no filter.
+- `min_show_snips`: only shows with at least this many snips in total.
+  Accepts **0, 5, 50, 100, 500, 1000, 5000, 10000 or 50000**; 0 applies no filter.
 
 `listen_history_search_moments` also accepts `first_listen_date_min` and
 `first_listen_date_max` to filter by when you first listened to an episode.
@@ -134,6 +145,7 @@ semantic search. Available to every signed-in Snipd user.
 | `.codex-plugin/plugin.json`, `.agents/plugins/marketplace.json` | Codex plugin and its marketplace |
 | `skills/snipd/SKILL.md` | Using Snipd: the tools and how to work with snips (reading, deleting, tagging), subscriptions and episodes. Shared by every agent |
 | `skills/snipd-connect/SKILL.md` | Adding the server to a client and completing the sign-in. Shared by every agent |
+| `skills/queue/SKILL.md` | Seeing and changing the play queue: what is queued or playing, queueing episodes, playing one next or now, removing episodes |
 | `skills/upload-file/SKILL.md` | Uploading a local audio/video file: options, `uploads_initiate`, the PUT, what to tell the user |
 | `skills/upload-youtube-video/SKILL.md` | Same for a YouTube video: yt-dlp (with consent) for metadata (title, channel, description, thumbnail, language) and the audio-only download, upload with the video URL |
 | `skills/upload-check-pending/SKILL.md` | Reporting pending uploads, explaining statuses, cleaning up stuck or failed ones |
@@ -169,6 +181,7 @@ once at the end of setup rather than leaving the user to discover it.
 
 | Plugin | Server | What changed |
 |---|---|---|
+| 0.12.0 | 0.10.0 | Filter moment searches by language and by episode or show snip count. Moment search is now available to every Snipd Premium account. |
 | 0.11.0 | 0.9.0 | `create-podcast-from-web-article` skill: turn a web article into a private Snipd podcast, with optional speech editing. |
 | 0.10.0 | 0.9.0 | Search people by name or bio, with minimum snip-count filters. |
 | 0.9.0 | 0.7.0 | Filter moment searches by publication date, first-listened date and people; results include guest person IDs. |

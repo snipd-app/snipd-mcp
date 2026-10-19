@@ -35,8 +35,8 @@ titles first through the listing tools.
 | `snips_remove_tag(tag)` | Deletes a tag from the account: it comes off every snip that carried it, and the snips themselves are kept. Ask first. |
 | `subscriptions_list()` | Every podcast the user follows, all at once, the show with the newest episode first. Each entry has the `show` (`id`, `title`, `author`, `image_url`, `website`, `rss_feed_url`, `language`, `categories`, `latest_episode_at`), `subscribed_at` and `notifications_enabled`. |
 | `subscriptions_latest_episodes(limit, offset)` | The newest episodes across the podcasts the user follows, newest first, like the app's Latest feed: episodes the user already finished or archived are left out. `limit` is at most 200. Page with `next_offset`. |
-| `subscriptions_search_moments(query, limit=10)` | Find moments across public podcasts you follow using embedding-based semantic search of episode transcripts. Requires Snipd Premium. |
-| `listen_history_search_moments(query, limit=10)` | Find moments across public podcast episodes in your listen history using embedding-based semantic search of their transcripts. Requires Snipd Premium. |
+| `subscriptions_search_moments(query, limit=10, ...)` | Find moments across public podcasts you follow using embedding-based semantic search of episode transcripts. Optional filters: see *Finding moments in podcasts*. Requires Snipd Premium. |
+| `listen_history_search_moments(query, limit=10, ...)` | Find moments across public podcast episodes in your listen history using embedding-based semantic search of their transcripts. Optional filters: see *Finding moments in podcasts*. Requires Snipd Premium. |
 | `subscriptions_add(show_id \| rss_feed_url, notifications_enabled)` | Subscribes the user to a show, by id or by RSS feed URL (unknown feeds are imported first, which takes a few seconds). Reports `already_subscribed` and, for RSS, `imported`. Ask first. |
 | `subscriptions_remove(show_ids)` | Unsubscribes from the given shows; ids the user did not follow come back as `not_subscribed`. Nothing else is deleted. Ask first. |
 | `people_search(query, search_by, min_snips=0)` | Find people on public podcasts by name (keyword search) or bio (embedding-based semantic search). Returns up to 20 matches with name, bio, person ID and snip count. |
@@ -148,7 +148,7 @@ those people discussed.
 Use `subscriptions_search_moments` for a topic across followed public podcasts and
 `listen_history_search_moments` for something discussed in episodes the user listened to.
 These tools require Snipd Premium and use embedding-based semantic search over transcripts: describe the topic,
-idea or moment to find.
+idea or moment to find. Only episodes Snipd has AI-processed (including transcription) are searchable.
 
 Request 1–20 chunks (default 10). Expect roughly 18,000 tokens for 10 chunks.
 Results include transcript passages with speakers, timestamps, episode titles, IDs and
@@ -162,4 +162,13 @@ For when the user first listened, use `first_listen_date_min` and
 
 Use `person_ids` to search episodes featuring any of those people as a guest or host.
 Copy a guest's `person_id` from a search result to narrow a follow-up search to that person.
-Publication dates, first-listened dates and people filters apply together when provided.
+
+Use `languages` to search episodes in any of those languages, as two-letter codes such as
+`"en"` or `"de"`.
+
+Use `min_snips` for episodes with at least that many snips, a popularity signal. It accepts
+only 0 (no filter), 5, 50, 100, 250, 500, 1000 or 2500. Use `min_show_snips` for shows with at
+least that many snips in total. It accepts only 0 (no filter), 5, 50, 100, 500, 1000, 5000,
+10000 or 50000.
+
+All supplied filters apply together.
