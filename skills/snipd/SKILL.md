@@ -1,6 +1,6 @@
 ---
 name: snipd
-description: Use when the user mentions Snipd, their podcast snips, highlights, notes or tags (deleting, tagging and untagging them included), the podcasts they follow or subscribe to, what is new in their podcasts, a show or an episode (details, transcript, AI snips), their episode feeds or filters, what they listened to, or finding podcast guests and hosts.
+description: Use when the user mentions Snipd, their podcast snips, highlights, notes or tags (deleting, tagging and untagging them included), the podcasts they follow or subscribe to, what is new in their podcasts, a show or an episode (details, transcript, AI snips), their episode feeds or filters, what they listened to, searching what was said in their podcasts, or finding podcast guests and hosts.
 compatibility: Needs the Snipd MCP server (remote, signs in with the user's Snipd account). Mostly reads the user's data; deletes or tags snips and changes subscriptions only through the tools named for it, after confirmation. The play queue has its own skill.
 metadata:
   mcp-server-url: https://mcp.snipd.com/mcp
