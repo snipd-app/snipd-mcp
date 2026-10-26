@@ -1,6 +1,6 @@
 ---
 name: snipd
-description: Use when the user mentions Snipd, their podcast snips, highlights, notes or tags (deleting, tagging and untagging them included), the podcasts they follow or subscribe to, what is new in their podcasts, a show or an episode (details, transcript, AI snips), their episode feeds or filters, or what they listened to.
+description: Use when the user mentions Snipd, their podcast snips, highlights, notes or tags (deleting, tagging and untagging them included), the podcasts they follow or subscribe to, what is new in their podcasts, a show or an episode (details, transcript, AI snips), their episode feeds or filters, what they listened to, searching what was said in their podcasts, or finding podcast guests and hosts.
 compatibility: Needs the Snipd MCP server (remote, signs in with the user's Snipd account). Mostly reads the user's data; deletes or tags snips and changes subscriptions only through the tools named for it, after confirmation. The play queue has its own skill.
 metadata:
   mcp-server-url: https://mcp.snipd.com/mcp
@@ -12,7 +12,7 @@ Snipd is a podcast app. A "snip" is a moment the user saved from an episode, wit
 and summary and often the user's own note. The Snipd MCP server exposes the signed-in user's
 snips (which it can also delete and file under tags), the podcasts they follow, shows and
 episodes (with transcripts and AI snips where the user has access), their episode feeds, their
-listen history and their play queue, and, for Premium users, lets them upload their own audio.
+listen history and their play queue, and, for Snipd Premium users, lets them upload their own audio.
 
 If the `snipd` tools (`account_whoami`, `snips_list`, `subscriptions_list`, ...) are not available, follow the
 `snipd-connect` skill first: it adds the server to this agent and walks the user through
@@ -35,8 +35,11 @@ titles first through the listing tools.
 | `snips_remove_tag(tag)` | Deletes a tag from the account: it comes off every snip that carried it, and the snips themselves are kept. Ask first. |
 | `subscriptions_list()` | Every podcast the user follows, all at once, the show with the newest episode first. Each entry has the `show` (`id`, `title`, `author`, `image_url`, `website`, `rss_feed_url`, `language`, `categories`, `latest_episode_at`), `subscribed_at` and `notifications_enabled`. |
 | `subscriptions_latest_episodes(limit, offset)` | The newest episodes across the podcasts the user follows, newest first, like the app's Latest feed: episodes the user already finished or archived are left out. `limit` is at most 200. Page with `next_offset`. |
+| `subscriptions_search_moments(query, limit=10, ...)` | Find moments across public podcasts you follow using embedding-based semantic search of episode transcripts. Optional filters: see *Finding moments in podcasts*. Requires Snipd Premium. |
+| `listen_history_search_moments(query, limit=10, ...)` | Find moments across public podcast episodes in your listen history using embedding-based semantic search of their transcripts. Optional filters: see *Finding moments in podcasts*. Requires Snipd Premium. |
 | `subscriptions_add(show_id \| rss_feed_url, notifications_enabled)` | Subscribes the user to a show, by id or by RSS feed URL (unknown feeds are imported first, which takes a few seconds). Reports `already_subscribed` and, for RSS, `imported`. Ask first. |
 | `subscriptions_remove(show_ids)` | Unsubscribes from the given shows; ids the user did not follow come back as `not_subscribed`. Nothing else is deleted. Ask first. |
+| `people_search(query, search_by, min_snips=0)` | Find people on public podcasts by name (keyword search) or bio (embedding-based semantic search). Returns up to 20 matches with name, bio, person ID and snip count. |
 | `shows_details(show_id)` | The show as its page in the app: the compact fields plus description, owner, subcategories, funding link, counts of live episodes, snips (all users) and subscribers, and the user's `is_subscribed` / `notifications_enabled`. |
 | `shows_episodes(show_id, sort, search, play_status, include_archived, limit, offset)` | The episodes of one show with the app's show-page filters: `sort` newest (default), oldest, longest, shortest or most_snipped; `search` words that must all appear in the title; `play_status` all, not_started, started, not_completed or completed; archived episodes hidden unless `include_archived`. Public shows and the user's own private feeds / upload folders only. |
 | `episodes_details(episode_id)` | The episode as its page in the app: description, language, hosts and guests, chapters and AI takeaways (only with AI access), counts, `has_transcript`, `ai_access` (status and reason), `is_archived`, `is_favorite`, `is_queued` and the user's `listen_state`. |
@@ -46,9 +49,10 @@ titles first through the listing tools.
 | `filters_episodes(filter_id, limit, offset)` | The episodes of one feed, as the app fills that tab. |
 | `history_list(in_progress_only, limit, offset)` | What the user listened to, most recent first, with position, `progress` (0-1) and `completed`. |
 | `queue_list`, `queue_add`, `queue_play_now`, `queue_remove` | The play queue: see the `queue` skill. |
-| `uploads_initiate(...)` | Premium only. Starts an upload of a local audio/video file and returns the signed URL to PUT the bytes to; takes title, author, description, thumbnail (cover) and language metadata. Use it through the `upload-file` and `upload-youtube-video` skills. |
+| `uploads_initiate(...)` | Snipd Premium only. Starts an upload of a local audio/video file and returns the signed URL to PUT the bytes to; takes title, author, description, thumbnail (cover) and language metadata. Use it through the `upload-file` and `upload-youtube-video` skills. |
 | `uploads_list(status)` | The user's uploads: `pending` (uploading, processing, error) and `completed` (processed files grouped by folder, each with its episode), plus the upload quota. |
 | `uploads_delete(upload_id)` | Deletes a pending upload. Processed uploads are removed in the app. |
+| `uploads_text_to_speech(text, title, ...)` | Snipd Premium only. Reads supplied text aloud and saves it as a private episode in the user's Uploads; `estimate_only=true` (the default) only returns the AI-credit estimate. For a web article, follow the `create-podcast-from-web-article` skill. |
 
 Episodes everywhere carry `id`, `title`, `published_at`, `duration_seconds`, `image_url`, `website`,
 `ai_description` (Snipd's short AI description; `null` until generated) and their `show`.
@@ -57,7 +61,7 @@ Episodes everywhere carry `id`, `title`, `published_at`, `duration_seconds`, `im
 
 Transcripts, chapters, AI snips and takeaways are AI content. `episodes_details` says whether the user
 may read them in `ai_access.status`: `available`, `locked` (the free plan unlocks two processed episodes
-a week by opening them in the Snipd app; Premium includes every processed episode) or `not_processed`
+a week by opening them in the Snipd app; Snipd Premium includes every processed episode) or `not_processed`
 (Snipd has no transcript yet). Nothing is unlocked, processed or charged from here: when a tool answers
 that the content is locked, explain how to unlock it in the app and offer the parts that are open
 (`ai_description`, hosts and guests, the user's own snips).
@@ -127,3 +131,45 @@ that the content is locked, explain how to unlock it in the app and offer the pa
 - `snips_untag` takes a tag off some snips; `snips_remove_tag` deletes the tag itself, everywhere.
   They are easy to confuse: say which one you are about to do, and confirm the second.
 - Changes show up in the app the next time it syncs, not instantly.
+
+## Finding people
+
+Use `people_search` with `search_by="name"` for case-insensitive keyword search
+when you know a person's name. Use `search_by="bio"` for
+embedding-based semantic search by background or expertise, such as "robotics
+founder" or "medical doctor at Stanford". Every signed-in user can use it.
+
+Returns up to 20 people with `person_id`, `name`, `bio` and `total_snips`.
+`min_snips` accepts only 0 (no filter), 5, 50, 100, 250, 500, 1000, 2500 or 5000.
+Use returned person IDs in a moment search's `person_ids` filter to find what
+those people discussed.
+
+## Finding moments in podcasts
+
+Use `subscriptions_search_moments` for a topic across followed public podcasts and
+`listen_history_search_moments` for something discussed in episodes the user listened to.
+These tools require Snipd Premium and use embedding-based semantic search over transcripts: describe the topic,
+idea or moment to find. Only episodes Snipd has AI-processed (including transcription) are searchable.
+
+Request 1–20 chunks (default 10). Expect roughly 18,000 tokens for 10 chunks.
+Results include transcript passages with speakers, timestamps, episode titles, IDs and
+links, plus guest names and person IDs. Overlapping passages are combined.
+Cite the returned episode links when using these passages.
+
+Both tools accept optional `publish_date_min` and `publish_date_max` filters.
+Use `YYYY-MM-DD` dates; both bounds include the supplied day, in UTC.
+For when the user first listened, use `first_listen_date_min` and
+`first_listen_date_max` on `listen_history_search_moments`.
+
+Use `person_ids` to search episodes featuring any of those people as a guest or host.
+Copy a guest's `person_id` from a search result to narrow a follow-up search to that person.
+
+Use `languages` to search episodes in any of those languages, as two-letter codes such as
+`"en"` or `"de"`.
+
+Use `min_snips` for episodes with at least that many snips, a popularity signal. It accepts
+only 0 (no filter), 5, 50, 100, 250, 500, 1000 or 2500. Use `min_show_snips` for shows with at
+least that many snips in total. It accepts only 0 (no filter), 5, 50, 100, 500, 1000, 5000,
+10000 or 50000.
+
+All supplied filters apply together.

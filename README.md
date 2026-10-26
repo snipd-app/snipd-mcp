@@ -1,16 +1,16 @@
 # Snipd for Claude Code, Codex and other agents
 
 Connect your coding agent to your [Snipd](https://www.snipd.com) account and let it work with your
-podcasts: read, delete and tag your snips and notes, browse and manage the shows you follow, open episodes (details,
+podcasts: read, delete and tag your snips and notes, browse and manage the shows you follow, search for
+moments in your subscriptions and listen history, find people by name or bio, open episodes (details,
 transcripts and AI snips), see your feeds and listen history, control your play queue, and upload your
 own audio. This repository is the official install kit for the Snipd MCP server: a Claude Code
-plugin, a Codex plugin and seven [Agent Skills](https://agentskills.io) that teach the agent what the
+plugin, a Codex plugin and eight [Agent Skills](https://agentskills.io) that teach the agent what the
 tools do and how to use them.
 
-The server is remote (nothing runs on your machine). Browsing never changes your account. Four
-things do, and the skills make the agent confirm with you first: deleting or tagging snips,
-subscribing and unsubscribing, changing the play queue (your devices pick it up within seconds), and
-uploads, which add episodes.
+The server is remote (nothing runs on your machine). Browsing never changes your account. Actions
+that do include deleting or tagging snips, subscribing or unsubscribing, changing the play queue
+(your devices pick it up within seconds), and adding episodes through uploads or text-to-speech.
 You sign in with your Snipd account in the browser; disconnecting in your agent revokes its access.
 
 - MCP endpoint: `https://mcp.snipd.com/mcp`
@@ -88,18 +88,53 @@ above. Available on Plus, Pro, Business, Enterprise and Edu plans (web).
 | `snips_create_tag`, `snips_remove_tag` | Creates an empty tag, or deletes one from your account: it comes off every snip that carried it, and the snips are kept. The agent asks before deleting one. |
 | `subscriptions_list` | The podcasts you follow, all at once, the one with the newest episode first, each with when you subscribed and whether you get new-episode notifications. |
 | `subscriptions_latest_episodes` | What is new in the podcasts you follow, newest first, leaving out episodes you finished or archived (like the app's Latest feed). Paged. |
+| `subscriptions_search_moments` | Find moments across public podcasts you follow using embedding-based semantic search of episode transcripts. Filter by publication date, people, language or snip count. Requires Snipd Premium. |
+| `listen_history_search_moments` | Find moments across public podcast episodes in your listen history using embedding-based semantic search of their transcripts. Filter by publication date, when you first listened, people, language or snip count. Requires Snipd Premium. |
 | `subscriptions_add`, `subscriptions_remove` | Follow a show by id or RSS feed URL (unknown feeds are imported first), or unfollow shows. The agent asks before calling them. |
+| `people_search` | Find people on public podcasts by name (keyword search) or bio (embedding-based semantic search). Returns up to 20 matches with name, bio, person ID and snip count. |
 | `shows_details`, `shows_episodes` | A show as its page in the app, and its episodes with the app's filters (sort, title search, play status, archived). |
-| `episodes_details`, `episodes_transcript`, `episodes_ai_summaries` | An episode as its page in the app, its transcript as speaker turns (the whole thing, or a window of it), and the AI snips the app shows. Transcript and AI snips follow the app's AI-access rule: free-for-all episodes, Premium, or episodes you unlocked in the app. |
+| `episodes_details`, `episodes_transcript`, `episodes_ai_summaries` | An episode as its page in the app, its transcript as speaker turns (the whole thing, or a window of it), and the AI snips the app shows. Transcript and AI snips follow the app's AI-access rule: free-for-all episodes, Snipd Premium, or episodes you unlocked in the app. |
 | `filters_list`, `filters_episodes` | Your episode feeds (the app's tabs, standard and custom) and the episodes in one of them. |
 | `history_list` | What you listened to, most recent first, with your progress. |
-| `subscriptions_search_moments`, `listen_history_search_moments` | Search for moments (what was said about a topic) across the public podcasts you follow, or across the episodes in your listen history, with filters for publish date, people, language and snip counts. |
-| `people_search` | Find people who appear on public podcasts, by name or by a description of their background; their ids filter a moment search. |
 | `queue_list`, `queue_add`, `queue_play_now`, `queue_remove` | Your play queue: see it, queue episodes next or last, make one the head of the queue, remove episodes. Your devices pick the changes up within seconds. |
-| `uploads_initiate` | Premium only. Reserves upload space and returns a signed URL the agent PUTs a local audio/video file to; the file becomes an episode once Snipd has processed it. |
+| `uploads_initiate` | Snipd Premium only. Reserves upload space and returns a signed URL the agent PUTs a local audio/video file to; the file becomes an episode once Snipd has processed it. |
 | `uploads_list` | Pending uploads (uploading, processing, error) and processed ones grouped by folder, plus the upload quota. |
 | `uploads_delete` | Deletes a pending upload. |
-| `uploads_text_to_speech` | Premium only. Text-to-speech: reads text you supply aloud, word for word, and saves the recording as a private episode in your Uploads. Estimates the AI credits first; generates only when you confirm. |
+| `uploads_text_to_speech` | Snipd Premium only. Reads text you supply aloud (text-to-speech) and saves the recording as a private episode in your Uploads, with optional speech editing for written articles and a cover image. Estimates the AI credits first; generates only when you confirm. |
+
+## Filtering moment searches
+
+Only episodes Snipd has AI-processed (including transcription) are searchable.
+
+Both search tools accept `query`, `limit` (default 10, maximum 20), and these optional filters:
+
+- `publish_date_min`, `publish_date_max`: dates use `YYYY-MM-DD` and include the
+  supplied day, in UTC.
+- `person_ids`: matches episodes featuring any listed person as a guest or host.
+  Results include guest names and person IDs so you can narrow a follow-up search
+  to a guest.
+- `languages`: matches episodes in any of these languages, given as two-letter
+  codes such as `"en"` or `"de"`.
+- `min_snips`: only episodes with at least this many snips, a popularity signal.
+  Accepts **0, 5, 50, 100, 250, 500, 1000 or 2500**; 0 applies no filter.
+- `min_show_snips`: only shows with at least this many snips in total.
+  Accepts **0, 5, 50, 100, 500, 1000, 5000, 10000 or 50000**; 0 applies no filter.
+
+`listen_history_search_moments` also accepts `first_listen_date_min` and
+`first_listen_date_max` to filter by when you first listened to an episode.
+All supplied filters apply together.
+
+## Finding people
+
+Use `people_search(query, search_by, min_snips=0)` with `search_by="name"` when you
+know a name, or `search_by="bio"` to find people by
+background or expertise, such as "robotics founder". Name search is
+case-insensitive keyword search with fuzzy matching; bio search is embedding-based
+semantic search. Available to every signed-in Snipd user.
+
+`min_snips` accepts only **0, 5, 50, 100, 250, 500, 1000, 2500 or 5000**;
+0 applies no snip-count filter. Results include the numeric snip count and a
+`person_id` you can pass to the moment-search tools' `person_ids` filter.
 
 ## Repository layout
 
@@ -112,9 +147,11 @@ above. Available on Plus, Pro, Business, Enterprise and Edu plans (web).
 | `.codex-plugin/plugin.json`, `.agents/plugins/marketplace.json` | Codex plugin and its marketplace |
 | `skills/snipd/SKILL.md` | Using Snipd: the tools and how to work with snips (reading, deleting, tagging), subscriptions and episodes. Shared by every agent |
 | `skills/snipd-connect/SKILL.md` | Adding the server to a client and completing the sign-in. Shared by every agent |
+| `skills/queue/SKILL.md` | Seeing and changing the play queue: what is queued or playing, queueing episodes, playing one next or now, removing episodes |
 | `skills/upload-file/SKILL.md` | Uploading a local audio/video file: options, `uploads_initiate`, the PUT, what to tell the user |
 | `skills/upload-youtube-video/SKILL.md` | Same for a YouTube video: yt-dlp (with consent) for metadata (title, channel, description, thumbnail, language) and the audio-only download, upload with the video URL |
 | `skills/upload-check-pending/SKILL.md` | Reporting pending uploads, explaining statuses, cleaning up stuck or failed ones |
+| `skills/create-podcast-from-web-article/SKILL.md` | Extracting a web article and creating a private Snipd podcast, with Snipd's optional speech editing for written articles; shared by Claude, Codex and other Agent Skills clients |
 | `skills/snipd-update/SKILL.md` | Updating the installed plugin, and turning on Claude Code auto-update. Shared by every agent |
 | `skills/*/agents/openai.yaml` | Codex-only sidecars that declare the MCP dependency so Codex offers to install it |
 
@@ -146,11 +183,16 @@ once at the end of setup rather than leaving the user to discover it.
 
 | Plugin | Server | What changed |
 |---|---|---|
-| 0.8.0 | 0.6.0 | Directory-ready: MIT license, listing fields (icon, docs, support, privacy, terms) in both manifests, portable `plugin.json` + `mcp.json` for OpenAI's directory, README rows for the moment search, people search and text-to-speech tools. |
+| 0.13.0 | 0.10.0 | Directory-ready: MIT license, listing fields (icon, docs, support, privacy, terms) in both manifests, portable `plugin.json` + `mcp.json` for OpenAI's directory. Text-to-podcast is now `uploads_text_to_speech` (was `text_to_podcast`). |
+| 0.12.0 | 0.10.0 | Filter moment searches by language and by episode or show snip count. Moment search is now available to every Snipd Premium account. |
+| 0.11.0 | 0.9.0 | `create-podcast-from-web-article` skill: turn a web article into a private Snipd podcast, with optional speech editing. |
+| 0.10.0 | 0.9.0 | Search people by name or bio, with minimum snip-count filters. |
+| 0.9.0 | 0.7.0 | Filter moment searches by publication date, first-listened date and people; results include guest person IDs. |
+| 0.8.0 | 0.7.0 | Search moments in your subscriptions and listen history, with transcript passages and episode links (Snipd Premium). |
 | 0.7.0 | 0.6.0 | `snipd-update` skill: update the plugin from either agent, and offer Claude Code auto-update. `snipd-connect` now raises it once after a successful sign-in. |
 | 0.6.0 | 0.6.0 | Snips can be changed, not only read: `snips_delete`, `snips_tag`, `snips_untag`, `snips_create_tag`, `snips_remove_tag`, and `snips_read_full` for the words of a snip. `episodes_transcript` no longer caps a read: with no bounds it returns the whole transcript, `start_seconds` alone reads to the end of the episode, and two bounds read exactly that stretch. |
 | 0.5.0 | 0.5.0 | Subscriptions (add, remove), shows (details, filtered episodes), episodes (details, transcript, AI snips), feeds, listen history, play queue with the `queue` skill; one `Show` and one `Episode` model everywhere (`snips_list` episodes now say `published_at`). |
-| 0.2.x | 0.2.x | Uploads of local audio files and YouTube videos (Premium), with the three `upload-*` skills. |
+| 0.2.x | 0.2.x | Uploads of local audio files and YouTube videos (Snipd Premium), with the three `upload-*` skills. |
 | 0.1.0 | 0.1.0 | Snips and the account, with the `snipd` and `snipd-connect` skills. |
 
 Keep at least two skills in the plugin. Codex gives a plugin its own skill root only when the

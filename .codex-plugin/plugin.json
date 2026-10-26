@@ -1,7 +1,7 @@
 {
   "name": "snipd",
-  "version": "0.8.0",
-  "description": "Connect Codex to your Snipd account: read, delete and tag your podcast snips and notes, browse and manage the podcasts you follow, open episodes (details, transcripts, AI snips), search moments across your podcasts, see your feeds and history, control your play queue, and upload your own audio or have text read aloud (Premium).",
+  "version": "0.13.0",
+  "description": "Connect Codex to your Snipd account: read, delete and tag your podcast snips and notes, browse and manage the podcasts you follow, search moments in your subscriptions and listen history, find people by name or bio, open episodes (details, transcripts, AI snips), see your feeds and history, control your play queue, and upload your own audio or have text read aloud (Snipd Premium).",
   "author": {
     "name": "Snipd",
     "url": "https://www.snipd.com"
@@ -26,18 +26,19 @@
   "interface": {
     "displayName": "Snipd",
     "shortDescription": "Your podcasts, snips and queue",
-    "longDescription": "Read the snips you saved in Snipd, with your notes, the AI summaries, the episode and show they come from, and your tags. Browse and manage the podcasts you follow, open any episode (details, transcript and AI snips where you have access), search for moments across the podcasts you follow or listened to, find the people who appear on them, see your feeds and listen history, and control your play queue from your agent; your devices pick the changes up. Premium users can also upload audio files and YouTube videos into their Snipd library, and have text read aloud (text-to-speech) as a private episode. Signs in with your Snipd account. Changes to your account (deleting or tagging snips, subscribing, the play queue, uploads) are only made after you confirm them.",
+    "longDescription": "Read the snips you saved in Snipd, with your notes, the AI summaries, the episode and show they come from, and your tags. Browse and manage the podcasts you follow, open any episode (details, transcript and AI snips where you have access), search for moments in your subscriptions and listen history (Snipd Premium), find people by name or bio, see your feeds and listen history, and control your play queue from your agent; your devices pick the changes up. Snipd Premium users can also upload audio files and YouTube videos into their Snipd library, and turn text such as a web article into a private episode read aloud (text-to-speech). Signs in with your Snipd account. Changes to your account (deleting or tagging snips, subscribing, the play queue, uploads) are only made after you confirm them.",
     "developerName": "Snipd",
     "category": "Productivity",
     "capabilities": [
       "Read your snips and notes",
       "Tag and organize your snips",
       "Browse and manage your subscriptions",
+      "Search moments in your subscriptions and listen history",
+      "Find people by name or bio",
       "Open episodes: details, transcripts and AI snips",
-      "Search moments across your podcasts",
       "See your feeds and listen history",
       "Control your play queue",
-      "Upload audio files and YouTube videos (Premium)"
+      "Upload audio files and YouTube videos (Snipd Premium)"
     ],
     "websiteURL": "https://www.snipd.com/mcp",
     "supportURL": "https://support.snipd.com",
