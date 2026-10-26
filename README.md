@@ -93,7 +93,7 @@ above. Available on Plus, Pro, Business, Enterprise and Edu plans (web).
 | `subscriptions_add`, `subscriptions_remove` | Follow a show by id or RSS feed URL (unknown feeds are imported first), or unfollow shows. The agent asks before calling them. |
 | `people_search` | Find people on public podcasts by name (keyword search) or bio (embedding-based semantic search). Returns up to 20 matches with name, bio, person ID and snip count. |
 | `shows_details`, `shows_episodes` | A show as its page in the app, and its episodes with the app's filters (sort, title search, play status, archived). |
-| `episodes_details`, `episodes_transcript`, `episodes_ai_summaries` | An episode as its page in the app, its transcript as speaker turns (the whole thing, or a window of it), and the AI snips the app shows. Transcript and AI snips follow the app's AI-access rule: free-for-all episodes, Snipd Premium, or episodes you unlocked in the app. |
+| `episodes_details`, `episodes_transcript`, `episodes_ai_summaries` | An episode as its page in the app, its transcript as speaker turns (the whole thing, or a window of it), and the AI snips the app shows. AI snips follow the app's AI-access rule: free-for-all episodes, Snipd Premium, or episodes you unlocked in the app. The full transcript follows the app's export rule: Snipd Premium, for episodes you had processed, exported before or listened to enough of. |
 | `filters_list`, `filters_episodes` | Your episode feeds (the app's tabs, standard and custom) and the episodes in one of them. |
 | `history_list` | What you listened to, most recent first, with your progress. |
 | `queue_list`, `queue_add`, `queue_play_now`, `queue_remove` | Your play queue: see it, queue episodes next or last, make one the head of the queue, remove episodes. Your devices pick the changes up within seconds. |
@@ -183,7 +183,7 @@ once at the end of setup rather than leaving the user to discover it.
 
 | Plugin | Server | What changed |
 |---|---|---|
-| 0.13.0 | 0.10.0 | Directory-ready: MIT license, listing fields (icon, docs, support, privacy, terms) in both manifests, portable `plugin.json` + `mcp.json` for OpenAI's directory. Text-to-podcast is now `uploads_text_to_speech` (was `text_to_podcast`). |
+| 0.13.0 | 0.10.0 | Directory-ready: MIT license, listing fields (icon, docs, support, privacy, terms) in both manifests, portable `plugin.json` + `mcp.json` for OpenAI's directory. Text-to-podcast is now `uploads_text_to_speech` (was `text_to_podcast`). `episodes_transcript` follows the app's transcript export rule. |
 | 0.12.0 | 0.10.0 | Filter moment searches by language and by episode or show snip count. Moment search is now available to every Snipd Premium account. |
 | 0.11.0 | 0.9.0 | `create-podcast-from-web-article` skill: turn a web article into a private Snipd podcast, with optional speech editing. |
 | 0.10.0 | 0.9.0 | Search people by name or bio, with minimum snip-count filters. |

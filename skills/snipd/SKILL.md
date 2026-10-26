@@ -43,7 +43,7 @@ titles first through the listing tools.
 | `shows_details(show_id)` | The show as its page in the app: the compact fields plus description, owner, subcategories, funding link, counts of live episodes, snips (all users) and subscribers, and the user's `is_subscribed` / `notifications_enabled`. |
 | `shows_episodes(show_id, sort, search, play_status, include_archived, limit, offset)` | The episodes of one show with the app's show-page filters: `sort` newest (default), oldest, longest, shortest or most_snipped; `search` words that must all appear in the title; `play_status` all, not_started, started, not_completed or completed; archived episodes hidden unless `include_archived`. Public shows and the user's own private feeds / upload folders only. |
 | `episodes_details(episode_id)` | The episode as its page in the app: description, language, hosts and guests, chapters and AI takeaways (only with AI access), counts, `has_transcript`, `ai_access` (status and reason), `is_archived`, `is_favorite`, `is_queued` and the user's `listen_state`. |
-| `episodes_transcript(episode_id, start_seconds, end_seconds)` | The transcript as speaker turns (`speaker`, `role`, `start_seconds`, `end_seconds`, `text`). Both bounds are optional and honoured exactly: no bounds returns the WHOLE transcript (roughly ten thousand words per hour of audio), `start_seconds` alone reads from there to the end, both read that stretch. `has_more`/`next_start_seconds` appear only when an `end_seconds` stopped short. Needs AI access. |
+| `episodes_transcript(episode_id, start_seconds, end_seconds)` | The transcript as speaker turns (`speaker`, `role`, `start_seconds`, `end_seconds`, `text`). Both bounds are optional and honoured exactly: no bounds returns the WHOLE transcript (roughly ten thousand words per hour of audio), `start_seconds` alone reads from there to the end, both read that stretch. `has_more`/`next_start_seconds` appear only when an `end_seconds` stopped short. Reading the full transcript counts as exporting it: Snipd Premium only, for episodes the app would export for free (see below). |
 | `episodes_ai_summaries(episode_id)` | The AI snips the app shows on the episode: type, markdown `body_md`, the quote and its speaker, position in seconds. Needs AI access. |
 | `filters_list()` | The user's episode feeds in the app's tab order: standard feeds (`latest`, `favorite`, `in_progress`, `history`, `most_snipped`, `guest_following`; `downloaded` only exists on the device) and custom filters with their definition. |
 | `filters_episodes(filter_id, limit, offset)` | The episodes of one feed, as the app fills that tab. |
@@ -65,6 +65,13 @@ a week by opening them in the Snipd app; Snipd Premium includes every processed 
 (Snipd has no transcript yet). Nothing is unlocked, processed or charged from here: when a tool answers
 that the content is locked, explain how to unlock it in the app and offer the parts that are open
 (`ai_description`, hosts and guests, the user's own snips).
+
+`episodes_transcript` is stricter than the other AI content, because it hands over the whole text the
+way the app's transcript export does. It needs Snipd Premium, and works only for episodes whose export
+is already free: the user had Snipd process the episode or exported its transcript before, or listened
+to enough of it. Otherwise the tool says so; suggest listening further or exporting the transcript once
+in the app (which costs AI credits), and meanwhile use `episodes_ai_summaries`, the chapters or the
+user's snips (`snips_read_full` still returns the words of their own snips).
 
 ## Working with subscriptions and shows
 
