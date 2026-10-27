@@ -1,7 +1,7 @@
 {
   "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
   "name": "snipd",
-  "version": "0.13.0",
+  "version": "0.14.0",
   "description": "Connect your agent to your Snipd account: read, delete and tag your podcast snips and notes, browse and manage the podcasts you follow, search moments in your subscriptions and listen history, find people by name or bio, open episodes (details, transcripts, AI snips), see your feeds and history, control your play queue, and upload your own audio or have text read aloud (Snipd Premium).",
   "author": {
     "name": "Snipd",

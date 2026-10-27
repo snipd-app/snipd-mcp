@@ -101,6 +101,7 @@ above. Available on Plus, Pro, Business, Enterprise and Edu plans (web).
 | `uploads_list` | Pending uploads (uploading, processing, error) and processed ones grouped by folder, plus the upload quota. |
 | `uploads_delete` | Deletes a pending upload. |
 | `uploads_text_to_speech` | Snipd Premium only. Reads text you supply aloud (text-to-speech) and saves the recording as a private episode in your Uploads, with optional speech editing for written articles and a cover image. Estimates the AI credits first; generates only when you confirm. |
+| `feedback_submit` | Sends your feedback about Snipd's tools to the Snipd team, after you approve the message. Your agent offers it when you ask for something Snipd cannot do yet or a tool misbehaves. |
 
 ## Filtering moment searches
 
@@ -183,6 +184,7 @@ once at the end of setup rather than leaving the user to discover it.
 
 | Plugin | Server | What changed |
 |---|---|---|
+| 0.14.0 | 0.13.0 | New `feedback_submit` tool: the agent offers to send the user's feedback when a capability is missing or a tool misbehaves, and sends it only once the user approves the message. Moment searches now cost AI credits. |
 | 0.13.0 | 0.10.0 | Directory-ready: MIT license, listing fields (icon, docs, support, privacy, terms) in both manifests, portable `plugin.json` + `mcp.json` for OpenAI's directory. Text-to-podcast is now `uploads_text_to_speech` (was `text_to_podcast`). `episodes_transcript` follows the app's transcript export rule. |
 | 0.12.0 | 0.10.0 | Filter moment searches by language and by episode or show snip count. Moment search is now available to every Snipd Premium account. |
 | 0.11.0 | 0.9.0 | `create-podcast-from-web-article` skill: turn a web article into a private Snipd podcast, with optional speech editing. |

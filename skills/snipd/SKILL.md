@@ -1,6 +1,6 @@
 ---
 name: snipd
-description: Use when the user mentions Snipd, their podcast snips, highlights, notes or tags (deleting, tagging and untagging them included), the podcasts they follow or subscribe to, what is new in their podcasts, a show or an episode (details, transcript, AI snips), their episode feeds or filters, what they listened to, searching what was said in their podcasts, or finding podcast guests and hosts.
+description: Use when the user mentions Snipd, their podcast snips, highlights, notes or tags (deleting, tagging and untagging them included), the podcasts they follow or subscribe to, what is new in their podcasts, a show or an episode (details, transcript, AI snips), their episode feeds or filters, what they listened to, searching what was said in their podcasts, finding podcast guests and hosts, or giving feedback about Snipd's tools.
 compatibility: Needs the Snipd MCP server (remote, signs in with the user's Snipd account). Mostly reads the user's data; deletes or tags snips and changes subscriptions only through the tools named for it, after confirmation. The play queue has its own skill.
 metadata:
   mcp-server-url: https://mcp.snipd.com/mcp
@@ -53,6 +53,7 @@ titles first through the listing tools.
 | `uploads_list(status)` | The user's uploads: `pending` (uploading, processing, error) and `completed` (processed files grouped by folder, each with its episode), plus the upload quota. |
 | `uploads_delete(upload_id)` | Deletes a pending upload. Processed uploads are removed in the app. |
 | `uploads_text_to_speech(text, title, ...)` | Snipd Premium only. Reads supplied text aloud and saves it as a private episode in the user's Uploads; `estimate_only=true` (the default) only returns the AI-credit estimate. For a web article, follow the `create-podcast-from-web-article` skill. |
+| `feedback_submit(message)` | Sends the user's feedback about these tools to the Snipd team. See *Sending feedback*. |
 
 Episodes everywhere carry `id`, `title`, `published_at`, `duration_seconds`, `image_url`, `website`,
 `ai_description` (Snipd's short AI description; `null` until generated) and their `show`.
@@ -180,3 +181,19 @@ least that many snips in total. It accepts only 0 (no filter), 5, 50, 100, 500, 
 10000 or 50000.
 
 All supplied filters apply together.
+
+## Sending feedback
+
+Snipd reads the feedback sent with `feedback_submit` to decide what to build next. Offer to send
+it when:
+
+- the user asks for something none of these tools can do ("add this to a playlist", "export my
+  snips to Notion"): say plainly that Snipd cannot do it from here yet, then offer to pass the
+  request on;
+- a tool fails, returns something wrong, or behaves differently from what its description says;
+- the user is frustrated with Snipd here, or suggests an improvement.
+
+Offer once per topic, and do not interrupt a task that is going well. Write the message in the
+user's words: what they wanted to do and what happened, with the tool name when one was involved.
+Leave out private details the feedback does not need. Show the user the exact message and call
+`feedback_submit` only after they agree; afterwards, thank them.
