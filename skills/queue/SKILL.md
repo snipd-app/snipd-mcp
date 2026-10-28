@@ -21,7 +21,7 @@ If the `snipd` tools are not available, follow the `snipd-connect` skill first.
 |---|---|
 | `queue_list()` | The queue in play order. Each item has its `episode`, `position_seconds` (where playback resumes), `added_at` and `is_playing` (the first item). |
 | `queue_add(episode_ids, position)` | Adds episodes, in the given order. `top` (default) puts them right after the playing item, so they play next; `bottom` appends them. An episode already in the queue is moved, not duplicated. Each resumes where the user left it (from the start when finished). Returns the resulting queue. |
-| `queue_play_now(episode_id)` | Makes the episode the head of the queue, moving it there if it is queued. The app switches to it when it picks up the change; playback itself is not started from here, so the user may need to press play. Returns the resulting queue. |
+| `queue_set_current(episode_id)` | Makes the episode the head of the queue, moving it there if it is queued. The app switches to it when it picks up the change; playback itself is not started from here, so the user may need to press play. Returns the resulting queue. |
 | `queue_remove(episode_ids)` | Takes episodes out of the queue. Ids that were not queued come back as `not_queued`. |
 
 ## How to work
@@ -34,7 +34,7 @@ If the `snipd` tools are not available, follow the `snipd-connect` skill first.
 3. Adding is safe to repeat; removing is not: for `queue_remove`, name the episodes and wait for a
    clear yes. Removing the playing item makes the next one the head.
 4. Tell the user what the queue looks like afterwards, in play order, and that their devices update
-   within seconds. For `queue_play_now`, say that the app jumps to the episode but may wait for them
+   within seconds. For `queue_set_current`, say that the app jumps to the episode but may wait for them
    to press play.
 5. Show `position_seconds` as `mm:ss` and say "resumes at" when it is not zero.
 

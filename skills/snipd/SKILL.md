@@ -48,7 +48,7 @@ titles first through the listing tools.
 | `filters_list()` | The user's episode feeds in the app's tab order: standard feeds (`latest`, `favorite`, `in_progress`, `history`, `most_snipped`, `guest_following`; `downloaded` only exists on the device) and custom filters with their definition. |
 | `filters_episodes(filter_id, limit, offset)` | The episodes of one feed, as the app fills that tab. |
 | `history_list(in_progress_only, limit, offset)` | What the user listened to, most recent first, with position, `progress` (0-1) and `completed`. |
-| `queue_list`, `queue_add`, `queue_play_now`, `queue_remove` | The play queue: see the `queue` skill. |
+| `queue_list`, `queue_add`, `queue_set_current`, `queue_remove` | The play queue: see the `queue` skill. |
 | `uploads_initiate(...)` | Snipd Premium only. Starts an upload of a local audio/video file and returns the signed URL to PUT the bytes to; takes title, author, description, thumbnail (cover) and language metadata. Use it through the `upload-file` and `upload-youtube-video` skills. |
 | `uploads_list(status)` | The user's uploads: `pending` (uploading, processing, error) and `completed` (processed files grouped by folder, each with its episode), plus the upload quota. |
 | `uploads_delete(upload_id)` | Deletes a pending upload. Processed uploads are removed in the app. |

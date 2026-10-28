@@ -96,7 +96,7 @@ above. Available on Plus, Pro, Business, Enterprise and Edu plans (web).
 | `episodes_details`, `episodes_transcript`, `episodes_ai_summaries` | An episode as its page in the app, its transcript as speaker turns (the whole thing, or a window of it), and the AI snips the app shows. AI snips follow the app's AI-access rule: free-for-all episodes, Snipd Premium, or episodes you unlocked in the app. The full transcript follows the app's export rule: Snipd Premium, for episodes you had processed, exported before or listened to enough of. |
 | `filters_list`, `filters_episodes` | Your episode feeds (the app's tabs, standard and custom) and the episodes in one of them. |
 | `history_list` | What you listened to, most recent first, with your progress. |
-| `queue_list`, `queue_add`, `queue_play_now`, `queue_remove` | Your play queue: see it, queue episodes next or last, make one the head of the queue, remove episodes. Your devices pick the changes up within seconds. |
+| `queue_list`, `queue_add`, `queue_set_current`, `queue_remove` | Your play queue: see it, queue episodes next or last, make one the head of the queue, remove episodes. Your devices pick the changes up within seconds. |
 | `uploads_initiate` | Snipd Premium only. Reserves upload space and returns a signed URL the agent PUTs a local audio/video file to; the file becomes an episode once Snipd has processed it. |
 | `uploads_list` | Pending uploads (uploading, processing, error) and processed ones grouped by folder, plus the upload quota. |
 | `uploads_delete` | Deletes a pending upload. |
@@ -136,72 +136,3 @@ semantic search. Available to every signed-in Snipd user.
 `min_snips` accepts only **0, 5, 50, 100, 250, 500, 1000, 2500 or 5000**;
 0 applies no snip-count filter. Results include the numeric snip count and a
 `person_id` you can pass to the moment-search tools' `person_ids` filter.
-
-## Repository layout
-
-| Path | Used by |
-|---|---|
-| `.mcp.json` | The MCP server both plugins install (Claude Code and Codex read the same `mcpServers` shape) |
-| `plugin.json`, `mcp.json` | The same plugin in the portable [Agent Plugins](https://agent-plugins.org) format that OpenAI's plugin directory (ChatGPT and Codex) reads: `mcp.json` declares the server as `streamable-http` with OAuth (dynamic client registration) and `plugin.json` carries the listing (`extensions.com.openai.interface`). Keep its `interface` identical to the one in `.codex-plugin/plugin.json`: when both exist, the root one wins |
-| `LICENSE` | MIT. Anthropic's directory requires a license file |
-| `.claude-plugin/plugin.json`, `.claude-plugin/marketplace.json` | Claude Code plugin and its marketplace. The manifest also carries the Anthropic directory listing fields (`icon`, `documentationUrl`, `supportUrl`, `privacyPolicyUrl`, `termsOfServiceUrl`) |
-| `.codex-plugin/plugin.json`, `.agents/plugins/marketplace.json` | Codex plugin and its marketplace |
-| `skills/snipd/SKILL.md` | Using Snipd: the tools and how to work with snips (reading, deleting, tagging), subscriptions and episodes. Shared by every agent |
-| `skills/snipd-connect/SKILL.md` | Adding the server to a client and completing the sign-in. Shared by every agent |
-| `skills/queue/SKILL.md` | Seeing and changing the play queue: what is queued or playing, queueing episodes, playing one next or now, removing episodes |
-| `skills/upload-file/SKILL.md` | Uploading a local audio/video file: options, `uploads_initiate`, the PUT, what to tell the user |
-| `skills/upload-youtube-video/SKILL.md` | Same for a YouTube video: yt-dlp (with consent) for metadata (title, channel, description, thumbnail, language) and the audio-only download, upload with the video URL |
-| `skills/upload-check-pending/SKILL.md` | Reporting pending uploads, explaining statuses, cleaning up stuck or failed ones |
-| `skills/create-podcast-from-web-article/SKILL.md` | Extracting a web article and creating a private Snipd podcast, with Snipd's optional speech editing for written articles; shared by Claude, Codex and other Agent Skills clients |
-| `skills/snipd-update/SKILL.md` | Updating the installed plugin, and turning on Claude Code auto-update. Shared by every agent |
-| `skills/*/agents/openai.yaml` | Codex-only sidecars that declare the MCP dependency so Codex offers to install it |
-
-## Versions
-
-Clients only pick up a new version of the plugin when `version` in `.claude-plugin/plugin.json`,
-`.codex-plugin/plugin.json` and `plugin.json` changes — a new commit alone does nothing. So bump both in the same
-commit as the change. The MCP server has its own version, reported as `serverInfo.version` when the
-agent connects; being remote, it is always current for users.
-
-How a new version reaches a user:
-
-- **Claude Code** can update in the background, but auto-update is **off by default** for
-  third-party marketplaces like this one. A user turns it on at `/plugin` → **Marketplaces** →
-  the Snipd marketplace → **Enable auto-update**, which persists `"autoUpdate": true` on that
-  marketplace's entry in `~/.claude/plugins/known_marketplaces.json`. Once on, Claude Code checks
-  within ~10 minutes of session start, updates the plugin on disk, and prompts for
-  `/reload-plugins` (or loads it at the next launch). Manually:
-  `claude plugin marketplace update <key>` then `claude plugin update snipd@<key>`. Note `<key>`
-  is whatever name the marketplace was added under — `snipd-app` for fresh installs, but `snipd`
-  for ones added before the rename.
-- **Codex** has no auto-update for user-added marketplaces; only OpenAI's curated repo syncs on
-  its own. Users must run `codex plugin marketplace upgrade snipd-app`, which refreshes Git
-  marketplaces only (a locally added one always reads its directory). The installed plugin is then
-  re-read only if the `version` changed.
-
-The `snipd-update` skill carries all of this for the agent, and `snipd-connect` offers auto-update
-once at the end of setup rather than leaving the user to discover it.
-
-| Plugin | Server | What changed |
-|---|---|---|
-| 0.14.0 | 0.13.0 | New `feedback_submit` tool: the agent offers to send the user's feedback when a capability is missing or a tool misbehaves, and sends it only once the user approves the message. Moment searches now cost AI credits. |
-| 0.13.0 | 0.10.0 | Directory-ready: MIT license, listing fields (icon, docs, support, privacy, terms) in both manifests, portable `plugin.json` + `mcp.json` for OpenAI's directory. Text-to-podcast is now `uploads_text_to_speech` (was `text_to_podcast`). `episodes_transcript` follows the app's transcript export rule. |
-| 0.12.0 | 0.10.0 | Filter moment searches by language and by episode or show snip count. Moment search is now available to every Snipd Premium account. |
-| 0.11.0 | 0.9.0 | `create-podcast-from-web-article` skill: turn a web article into a private Snipd podcast, with optional speech editing. |
-| 0.10.0 | 0.9.0 | Search people by name or bio, with minimum snip-count filters. |
-| 0.9.0 | 0.7.0 | Filter moment searches by publication date, first-listened date and people; results include guest person IDs. |
-| 0.8.0 | 0.7.0 | Search moments in your subscriptions and listen history, with transcript passages and episode links (Snipd Premium). |
-| 0.7.0 | 0.6.0 | `snipd-update` skill: update the plugin from either agent, and offer Claude Code auto-update. `snipd-connect` now raises it once after a successful sign-in. |
-| 0.6.0 | 0.6.0 | Snips can be changed, not only read: `snips_delete`, `snips_tag`, `snips_untag`, `snips_create_tag`, `snips_remove_tag`, and `snips_read_full` for the words of a snip. `episodes_transcript` no longer caps a read: with no bounds it returns the whole transcript, `start_seconds` alone reads to the end of the episode, and two bounds read exactly that stretch. |
-| 0.5.0 | 0.5.0 | Subscriptions (add, remove), shows (details, filtered episodes), episodes (details, transcript, AI snips), feeds, listen history, play queue with the `queue` skill; one `Show` and one `Episode` model everywhere (`snips_list` episodes now say `published_at`). |
-| 0.2.x | 0.2.x | Uploads of local audio files and YouTube videos (Snipd Premium), with the three `upload-*` skills. |
-| 0.1.0 | 0.1.0 | Snips and the account, with the `snipd` and `snipd-connect` skills. |
-
-Keep at least two skills in the plugin. Codex gives a plugin its own skill root only when the
-plugin ships two or more skills (`shared_host_alias_roots` in `codex-rs/ext/skills/src/host_aliases.rs`);
-with a single skill the model must expand `<marketplace>/<plugin>/<version>/skills/<skill>/SKILL.md`
-itself and reliably drops a segment, so every session starts with a failed read.
-
-Validate the Claude Code plugin locally with `claude plugin validate . --strict --profile directory` and try it with
-`claude --plugin-dir .`. Inside a checkout, Codex discovers the marketplace automatically; elsewhere
-`codex plugin marketplace add /path/to/snipd-mcp` then `codex plugin add snipd@snipd-app`.
