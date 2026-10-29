@@ -12,8 +12,8 @@ whether it includes this public repository.
 Anthropic's connector directory does not allow generating audio, so the server hides `uploads_text_to_speech`
 from claude.ai (see `HIDDEN_TOOLS_BY_CLIENT` in the backend's `src/snipd/api/cloud_run/mcp/server/core.py`).
 The `claude` branch is the plugin submitted to Anthropic: `main` without text-to-speech (no
-`create-podcast-from-web-article` skill, no `uploads_text_to_speech` in the README, the `snipd` skill or the
-Claude manifests). Merge `main` into `claude` after every change and keep the removal.
+`create-podcast-from-web-article` skill, no `uploads_text_to_speech` in the README, the `snipd` skill or any
+manifest). Merge `main` into `claude` after every change and keep the removal.
 
 The README is public and for users; keep maintainer notes here.
 
