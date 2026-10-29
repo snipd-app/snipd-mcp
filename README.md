@@ -10,7 +10,7 @@ tools do and how to use them.
 
 The server is remote (nothing runs on your machine). Browsing never changes your account. Actions
 that do include deleting or tagging snips, subscribing or unsubscribing, changing the play queue
-(your devices pick it up within seconds), and adding episodes through uploads or text-to-speech.
+(your devices pick it up within seconds), and adding episodes through uploads.
 You sign in with your Snipd account in the browser; disconnecting in your agent revokes its access.
 
 - MCP endpoint: `https://mcp.snipd.com/mcp`
@@ -100,7 +100,6 @@ above. Available on Plus, Pro, Business, Enterprise and Edu plans (web).
 | `uploads_initiate` | Snipd Premium only. Reserves upload space and returns a signed URL the agent PUTs a local audio/video file to; the file becomes an episode once Snipd has processed it. |
 | `uploads_list` | Pending uploads (uploading, processing, error) and processed ones grouped by folder, plus the upload quota. |
 | `uploads_delete` | Deletes a pending upload. |
-| `uploads_text_to_speech` | Snipd Premium only. Reads text you supply aloud (text-to-speech) and saves the recording as a private episode in your Uploads, with optional speech editing for written articles and a cover image. Estimates the AI credits first; generates only when you confirm. |
 | `feedback_submit` | Sends your feedback about Snipd's tools to the Snipd team, after you approve the message. Your agent offers it when you ask for something Snipd cannot do yet or a tool misbehaves. |
 
 ## Filtering moment searches

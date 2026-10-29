@@ -7,6 +7,14 @@ whether it includes this public repository.
 
 # Maintaining the plugin
 
+## The `claude` branch
+
+Anthropic's connector directory does not allow generating audio, so the server hides `uploads_text_to_speech`
+from claude.ai (see `HIDDEN_TOOLS_BY_CLIENT` in the backend's `src/snipd/api/cloud_run/mcp/server/core.py`).
+The `claude` branch is the plugin submitted to Anthropic: `main` without text-to-speech (no
+`create-podcast-from-web-article` skill, no `uploads_text_to_speech` in the README, the `snipd` skill or the
+Claude manifests). Merge `main` into `claude` after every change and keep the removal.
+
 The README is public and for users; keep maintainer notes here.
 
 Clients only pick up a new plugin version when `version` changes in `.claude-plugin/plugin.json`,
@@ -28,7 +36,6 @@ Clients only pick up a new plugin version when `version` changes in `.claude-plu
 | `skills/upload-file/SKILL.md` | Uploading a local audio/video file: options, `uploads_initiate`, the PUT, what to tell the user |
 | `skills/upload-youtube-video/SKILL.md` | Same for a YouTube video: yt-dlp (with consent) for metadata (title, channel, description, thumbnail, language) and the audio-only download, upload with the video URL |
 | `skills/upload-check-pending/SKILL.md` | Reporting pending uploads, explaining statuses, cleaning up stuck or failed ones |
-| `skills/create-podcast-from-web-article/SKILL.md` | Extracting a web article and creating a private Snipd podcast, with Snipd's optional speech editing for written articles; shared by Claude, Codex and other Agent Skills clients |
 | `skills/snipd-update/SKILL.md` | Updating the installed plugin, and turning on Claude Code auto-update. Shared by every agent |
 | `skills/*/agents/openai.yaml` | Codex-only sidecars that declare the MCP dependency so Codex offers to install it |
 

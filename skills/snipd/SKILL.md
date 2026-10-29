@@ -52,7 +52,6 @@ titles first through the listing tools.
 | `uploads_initiate(...)` | Snipd Premium only. Starts an upload of a local audio/video file and returns the signed URL to PUT the bytes to; takes title, author, description, thumbnail (cover) and language metadata. Use it through the `upload-file` and `upload-youtube-video` skills. |
 | `uploads_list(status)` | The user's uploads: `pending` (uploading, processing, error) and `completed` (processed files grouped by folder, each with its episode), plus the upload quota. |
 | `uploads_delete(upload_id)` | Deletes a pending upload. Processed uploads are removed in the app. |
-| `uploads_text_to_speech(text, title, ...)` | Snipd Premium only. Reads supplied text aloud and saves it as a private episode in the user's Uploads; `estimate_only=true` (the default) only returns the AI-credit estimate. For a web article, follow the `create-podcast-from-web-article` skill. |
 | `feedback_submit(message)` | Sends the user's feedback about these tools to the Snipd team. See *Sending feedback*. |
 
 Episodes everywhere carry `id`, `title`, `published_at`, `duration_seconds`, `image_url`, `website`,
