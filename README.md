@@ -76,6 +76,14 @@ Settings → Connectors → **Add custom connector** → URL
 Settings → Security and login → **Developer mode**, then create a connector with the MCP URL
 above. Available on Plus, Pro, Business, Enterprise and Edu plans (web).
 
+## Services the skills contact
+
+Besides the Snipd MCP server, two skills send data elsewhere, always from the user's own machine:
+
+- `upload-file` uploads the chosen file to the Google Cloud Storage URL that `uploads_initiate` returns (Snipd's storage).
+- `upload-youtube-video` runs [yt-dlp](https://github.com/yt-dlp/yt-dlp) to read the video's details and download its audio
+  from YouTube, then uploads it to Snipd's storage the same way.
+
 ## What the agent can do
 
 | Tool | What it returns |
