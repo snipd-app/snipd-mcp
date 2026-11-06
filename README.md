@@ -1,5 +1,7 @@
 # Snipd for Claude Code, Codex and other agents
 
+**MCP server URL:** `https://mcp.snipd.com/mcp`
+
 Connect your coding agent to your [Snipd](https://www.snipd.com) account and let it work with your
 podcasts: read, delete and tag your snips and notes, browse and manage the shows and guests you follow,
 search what was said in podcasts, find people by name or bio, open episodes (AI details, AI summaries and
