@@ -1,199 +1,147 @@
 ---
 name: snipd
-description: Use when the user mentions Snipd, their podcast snips, highlights, notes or tags (deleting, tagging and untagging them included), the podcasts they follow or subscribe to, what is new in their podcasts, a show or an episode (details, transcript, AI snips), their episode feeds or filters, what they listened to, searching what was said in their podcasts, finding podcast guests and hosts, or giving feedback about Snipd's tools.
-compatibility: Needs the Snipd MCP server (remote, signs in with the user's Snipd account). Mostly reads the user's data; deletes or tags snips and changes subscriptions only through the tools named for it, after confirmation. The play queue has its own skill.
+description: Use when the user mentions Snipd, their podcast snips, highlights, notes or tags (deleting, tagging and untagging them included), the shows they follow, what is new in their podcasts, a show or an episode (details, AI summary, transcript), their favorites, the guests they follow, their custom episode lists, what is trending on Snipd, what they listened to, searching what was said in podcasts, finding podcast guests and hosts, their AI credits, or giving feedback about Snipd's tools.
+compatibility: Needs the Snipd MCP server (remote, signs in with the user's Snipd account). Mostly reads the user's data; deletes or tags snips and changes follows and favorites only through the tools named for it, after confirmation. Some tools cost AI credits. The play queue has its own skill.
 metadata:
   mcp-server-url: https://mcp.snipd.com/mcp
 ---
 
 # Snipd
 
-Snipd is a podcast app. A "snip" is a moment the user saved from an episode, with an AI title
-and summary and often the user's own note. The Snipd MCP server exposes the signed-in user's
-snips (which it can also delete and file under tags), the podcasts they follow, shows and
-episodes (with transcripts and AI snips where the user has access), their episode feeds, their
-listen history and their play queue, and, for Snipd Premium users, lets them upload their own audio.
+Snipd is a podcast app. A "snip" is a moment the user saved from an episode, with its note. The Snipd MCP server
+exposes the signed-in user's snips and tags, the shows and guests they follow, shows and episodes (with AI
+episode details, AI summaries and transcripts), their favorites, custom lists and listen history, the Discover
+lists, a search through podcast transcripts for what was said (`transcripts_search`), people search, their play queue
+and, for Snipd Premium, uploads. The server's own
+instructions explain the terms (show, episode, snip, `snip_count`, AI credits) and the common use cases.
 
-If the `snipd` tools (`account_whoami`, `snips_list`, `subscriptions_list`, ...) are not available, follow the
-`snipd-connect` skill first: it adds the server to this agent and walks the user through
-signing in.
+If the `snipd` tools (`account_info`, `snips_list`, `followed_shows_list`, ...) are not available, follow the
+`snipd-connect` skill first: it adds the server to this agent and walks the user through signing in.
 
-Every id is a UUID that came from an earlier result. Never guess or make up an id; resolve
-titles first through the listing tools.
+Every id (`show_id`, `episode_id`, `snip_id`, `person_id`, `tag_id`, `episode_filter_id`) came from an earlier
+result. Never guess or make up an id; resolve titles first through the listing tools.
+
+## Responses and AI credits
+
+Every response is `{"data": …, "meta": …}`. On tools that can cost AI credits, `meta.cost` says what the call cost
+(`ai_credits_charged`), what for (`breakdown`) and what is left (`ai_credits_remaining`); `account_info` shows the
+balance. What costs AI credits:
+
+| What | Price |
+|---|---|
+| AI episode details (AI description, guests, snip count) on episode lists, with `include_ai_episode_details` (on by default) | 0.05 per returned episode, every call |
+| `episodes_details` (always with all AI episode details: hosts, guests, chapters, mentioned books) | 0.05 per episode |
+| `episodes_ai_summaries` | 1 per episode; free for episodes the user had Snipd process |
+| `transcripts_search` | 1 per call |
+| `episodes_transcripts` (Premium) | once per episode: 1 per minute, 0.5 if the user listened to it, free if they processed or exported it before |
+| `uploads_text_to_speech` (Premium) | about 8.5 per 1,000 characters |
+
+Everything else is free. Free accounts get 20 AI credits per calendar month; Premium includes many more each calendar
+month. Users upgrade to Snipd Premium inside the Snipd mobile app, on the "You" screen. Turn
+`include_ai_episode_details` off when you only need ids or titles (to queue, favorite or look up an episode you
+already know), and keep pages at a reasonable size (10–20 episodes). When a call is refused for lack of credits, the
+error says what it would cost and how to get more: tell the user.
 
 ## Tools
 
 | Tool | What it returns |
 |---|---|
-| `account_whoami` | The signed-in Snipd account (user id, email, username, public name). Call it when the user asks which account is connected. |
-| `snips_list(limit, offset)` | Snips newest first, grouped by episode with the episode and its show. `limit` is at most 500. `content` is markdown: the user's note, else the snip's title and summary. `start_seconds`/`end_seconds` locate the snip in the episode. `tags` are the names the snip is filed under. Page with `next_offset` until it is `null`. |
-| `snips_read_full(snip_ids)` | The same snips plus their `transcript`: what is actually said in each one, as speaker turns with names and roles. At most 20 at a time. Read these before quoting a snip — `content` is the user's note or Snipd's summary, not the words. A snip whose episode Snipd has not processed, or that this account may not read, comes back with no `transcript` and an `ai_access` saying why. |
-| `snips_delete(snip_ids)` | Deletes snips, up to 100 at a time. They disappear from the app on every device. Ids that are not (or no longer) the user's come back in `not_found` instead of failing. Ask first. |
-| `snips_tag(snip_ids, tags)` | Files snips under tags, creating the tags that do not exist yet. Give a tag by name, as the user says it, or by id. Snips already carrying it keep it. Returns the tags used, which are new, and how many memberships were added. |
-| `snips_untag(snip_ids, tags)` | Takes those tags off those snips. The tags stay on the account and on other snips. Names the user has no tag for come back in `unknown_tags`. |
-| `snips_create_tag(title)` | Creates an empty tag. A tag the user already has under that name is returned instead (`already_existed`), so it is safe to call. |
-| `snips_remove_tag(tag)` | Deletes a tag from the account: it comes off every snip that carried it, and the snips themselves are kept. Ask first. |
-| `subscriptions_list()` | Every podcast the user follows, all at once, the show with the newest episode first. Each entry has the `show` (`id`, `title`, `author`, `image_url`, `website`, `rss_feed_url`, `language`, `categories`, `latest_episode_at`), `subscribed_at` and `notifications_enabled`. |
-| `subscriptions_latest_episodes(limit, offset)` | The newest episodes across the podcasts the user follows, newest first, like the app's Latest feed: episodes the user already finished or archived are left out. `limit` is at most 200. Page with `next_offset`. |
-| `subscriptions_search_moments(query, limit=10, ...)` | Find moments across public podcasts you follow using embedding-based semantic search of episode transcripts. Optional filters: see *Finding moments in podcasts*. Requires Snipd Premium. |
-| `listen_history_search_moments(query, limit=10, ...)` | Find moments across public podcast episodes in your listen history using embedding-based semantic search of their transcripts. Optional filters: see *Finding moments in podcasts*. Requires Snipd Premium. |
-| `subscriptions_add(show_id \| rss_feed_url, notifications_enabled)` | Subscribes the user to a show, by id or by RSS feed URL (unknown feeds are imported first, which takes a few seconds). Reports `already_subscribed` and, for RSS, `imported`. Ask first. |
-| `subscriptions_remove(show_ids)` | Unsubscribes from the given shows; ids the user did not follow come back as `not_subscribed`. Nothing else is deleted. Ask first. |
-| `people_search(query, search_by, min_snips=0)` | Find people on public podcasts by name (keyword search) or bio (embedding-based semantic search). Returns up to 20 matches with name, bio, person ID and snip count. |
-| `shows_details(show_id)` | The show as its page in the app: the compact fields plus description, owner, subcategories, funding link, counts of live episodes, snips (all users) and subscribers, and the user's `is_subscribed` / `notifications_enabled`. |
-| `shows_episodes(show_id, sort, search, play_status, include_archived, limit, offset)` | The episodes of one show with the app's show-page filters: `sort` newest (default), oldest, longest, shortest or most_snipped; `search` words that must all appear in the title; `play_status` all, not_started, started, not_completed or completed; archived episodes hidden unless `include_archived`. Public shows and the user's own private feeds / upload folders only. |
-| `episodes_details(episode_id)` | The episode as its page in the app: description, language, hosts and guests, chapters and AI takeaways (only with AI access), counts, `has_transcript`, `ai_access` (status and reason), `is_archived`, `is_favorite`, `is_queued` and the user's `listen_state`. |
-| `episodes_transcript(episode_id, start_seconds, end_seconds)` | The transcript as speaker turns (`speaker`, `role`, `start_seconds`, `end_seconds`, `text`). Both bounds are optional and honoured exactly: no bounds returns the WHOLE transcript (roughly ten thousand words per hour of audio), `start_seconds` alone reads from there to the end, both read that stretch. `has_more`/`next_start_seconds` appear only when an `end_seconds` stopped short. Reading the full transcript counts as exporting it: Snipd Premium only, for episodes the app would export for free (see below). |
-| `episodes_ai_summaries(episode_id)` | The AI snips the app shows on the episode: type, markdown `body_md`, the quote and its speaker, position in seconds. Needs AI access. |
-| `filters_list()` | The user's episode feeds in the app's tab order: standard feeds (`latest`, `favorite`, `in_progress`, `history`, `most_snipped`, `guest_following`; `downloaded` only exists on the device) and custom filters with their definition. |
-| `filters_episodes(filter_id, limit, offset)` | The episodes of one feed, as the app fills that tab. |
-| `history_list(in_progress_only, limit, offset)` | What the user listened to, most recent first, with position, `progress` (0-1) and `completed`. |
+| `account_info` | The signed-in account: username, public name, email, plan, AI credits left, when a Free account's credits reset. |
+| `snips_list(...)` | Snips newest first, grouped by episode. Filters: `created_after`, `created_before`, `episode_id`, `show_id`, `is_favorite`, `is_auto_snip`, `tag_id`. Each snip has `note` (markdown, as the app shows it; `null` when empty), `start_seconds`/`end_seconds`, `create_ts`, `is_favorite`, `is_auto_snip` and its tag titles. `limit` at most 50; page with `next_offset` until it is `null`. |
+| `snips_details(snip_ids, include_transcript)` | Up to 20 snips with their episode and what is said in them, as speaker turns, cut after 7 minutes. Read these before quoting a snip. The transcript is `null` when the user cannot see the episode's AI content in the app. |
+| `snips_delete`, `snips_tag`, `snips_untag` | Delete snips; file them under tags (missing tags are created); take tags off them. Ask first before deleting. |
+| `tags_list`, `tags_create`, `tags_delete` | The user's tags with `tag_id` and snip count; create one; delete one everywhere (the snips stay). Ask first before deleting. |
+| `followed_shows_list` | Every followed show, the one with the newest episode first. |
+| `followed_shows_latest_episodes(...)` | Episodes of the followed shows, newest first by default. Filters as in the app's custom lists: `show_ids`, `play_status` (`not_started`, `in_progress`, `completed`), `ai_processed_only`, `sort` (`newest`, `oldest`, `most_snipped`). `oldest` covers at most 100 followed shows; pass `show_ids` for a user who follows more. |
+| `show_follow`, `show_unfollow` | Follow a show by `show_id` or RSS feed URL (unknown feeds are imported first), unfollow one. Ask first. |
+| `shows_details(show_ids)` | Up to 50 shows as their page in the app, with the user's relation to them. |
+| `shows_episodes(show_id, ...)` | One show's episodes, followed or not: `sort`, `title_search_term`, `play_status`, `include_archived`, `ai_processed_only`. |
+| `episodes_details(episode_ids, include_shownotes)` | Up to 50 episodes: everything the episode screen shows, the user's progress (`listen`), and all AI episode details. |
+| `episodes_ai_summaries(episode_ids)` | A markdown summary per episode, for up to 10 episodes: the key moments and takeaways, each with its title, start and end time, a link and its text. |
+| `episodes_transcripts(episode_id, start_seconds, end_seconds, cost_estimate_only)` | Premium. The transcript, whole or a part, as speaker turns. The first call unlocks the whole episode's transcript; `cost_estimate_only` gives the price without charging. |
+| `favorite_episodes_list`, `favorite_episodes_add`, `favorite_episodes_remove` | The user's favorite episodes. |
+| `followed_guests_list`, `guests_follow`, `guests_unfollow`, `followed_guests_latest_episodes` | The people the user follows as guests, and the newest episodes they appear in. |
+| `listen_history_list(in_progress_only, ...)` | What the user listened to, most recent first, with `listen` (last played, position, time listened, completed). |
+| `custom_episode_filters_list`, `custom_episode_filters_episodes` | The custom lists the user created in the app, and their episodes. |
+| `discover_episodes(list)` | The Discover lists: `trending`, `most_snipped_30_days`, `most_snipped_all_time`. |
+| `transcripts_search(query, scope, ...)` | Find where something was said: see *Searching transcripts*. |
+| `people_search(query, search_by, min_snips)` | People on public shows by name or bio, with `person_id` and snip count. |
 | `queue_list`, `queue_add`, `queue_set_current`, `queue_remove` | The play queue: see the `queue` skill. |
-| `uploads_initiate(...)` | Snipd Premium only. Starts an upload of a local audio/video file and returns the signed URL to PUT the bytes to; takes title, author, description, thumbnail (cover) and language metadata. Use it through the `upload-file` and `upload-youtube-video` skills. |
-| `uploads_list(status)` | The user's uploads: `pending` (uploading, processing, error) and `completed` (processed files grouped by folder, each with its episode), plus the upload quota. |
-| `uploads_delete(upload_id)` | Deletes a pending upload. Processed uploads are removed in the app. |
-| `uploads_text_to_speech(text, title, ...)` | Snipd Premium only. Reads supplied text aloud and saves it as a private episode in the user's Uploads; `estimate_only=true` (the default) only returns the AI-credit estimate. For a web article, follow the `create-podcast-from-web-article` skill. |
+| `uploads_initiate`, `uploads_list`, `uploads_delete` | Premium uploads: use them through the `upload-file`, `upload-youtube-video` and `upload-check-pending` skills. |
+| `uploads_text_to_speech(text, title, ...)` | Premium. Reads supplied text aloud into a private episode; `estimate_only=true` (the default) only returns the estimate. For a web article, follow the `create-podcast-from-web-article` skill. |
 | `feedback_submit(message)` | Sends the user's feedback about these tools to the Snipd team. See *Sending feedback*. |
 
-Episodes everywhere carry `id`, `title`, `published_at`, `duration_seconds`, `image_url`, `website`,
-`ai_description` (Snipd's short AI description; `null` until generated) and their `show`.
+Episodes in lists carry `episode_id`, `title`, `show_id`, `show_title`, `publish_ts`, `duration_seconds`,
+`image_url`, `share_url` and, with `include_ai_episode_details`, `ai_episode_details`.
 
-## AI access
+## Working with shows and episodes
 
-Transcripts, chapters, AI snips and takeaways are AI content. `episodes_details` says whether the user
-may read them in `ai_access.status`: `available`, `locked` (the free plan unlocks two processed episodes
-a week by opening them in the Snipd app; Snipd Premium includes every processed episode) or `not_processed`
-(Snipd has no transcript yet). Nothing is unlocked, processed or charged from here: when a tool answers
-that the content is locked, explain how to unlock it in the app and offer the parts that are open
-(`ai_description`, hosts and guests, the user's own snips).
-
-`episodes_transcript` is stricter than the other AI content, because it hands over the whole text the
-way the app's transcript export does. It needs Snipd Premium, and works only for episodes whose export
-is already free: the user had Snipd process the episode or exported its transcript before, or listened
-to enough of it. Otherwise the tool says so; suggest listening further or exporting the transcript once
-in the app (which costs AI credits), and meanwhile use `episodes_ai_summaries`, the chapters or the
-user's snips (`snips_read_full` still returns the words of their own snips).
-
-## Working with subscriptions and shows
-
-- "Which podcasts do I follow?": `subscriptions_list` returns everything at once, so never page it.
-  Sort or filter as asked; `latest_episode_at` says how active a show is and `categories` what it
-  is about.
-- "What's new in my podcasts?": `subscriptions_latest_episodes`. Mention that episodes the user
-  already finished or archived are not in it. One page is usually enough.
-- "Tell me about show X" / "list the episodes of X": find the show first. Match the title in
-  `subscriptions_list`, or take `show.id` from an episode or snip; then `shows_details` or
-  `shows_episodes`. Use `search` for a title the user remembers and `play_status` for "unplayed" or
-  "finished" questions. When the tool answers that the show was not found, the id is wrong or the
-  show is private: say so and offer to look it up in the user's subscriptions.
-- Subscribing and unsubscribing change the user's account: state which show(s) and wait for a clear yes
-  before calling `subscriptions_add` or `subscriptions_remove`. For an RSS URL, say that unknown feeds
-  are imported first and can take a few seconds. Afterwards, tell the user the app shows the change on
-  its next start or pull-to-refresh.
-
-## Working with episodes
-
-- Start with `episodes_details`: it has the description, who is on it, the user's progress and the AI
-  access status, so you know whether the transcript and AI snips can be read.
-- "What is this episode about?" / "key points": `episodes_ai_summaries` when available, else
-  `ai_description` and the description from the details.
-- Quotes, exact wording, "what did they say about X": `episodes_transcript`. Bound the read when you know
-  where to look: `start_seconds` near a chapter's start from the details, or where the user is, and an
-  `end_seconds` when you only want that stretch. Nothing is capped, so a bounded read returns everything
-  between the two, and `start_seconds` on its own runs to the end of the episode.
-- Call it with no bounds at all when you need the whole thing: the user asked for the full transcript, or
-  the question ("does she ever mention X?", "summarise the whole conversation") cannot be answered from
-  one part of the episode. Expect roughly ten thousand words per hour of audio, so for a long episode say
-  what you are about to read, and prefer a bounded read when the chapters or a snip point at the minute.
+- "What's new in my podcasts?": `followed_shows_latest_episodes`; add `play_status=["not_started", "in_progress"]`
+  for what the user has not finished, `sort="most_snipped"` for the ones listeners snipped most. One page is
+  usually enough.
+- "Tell me about show X" / "the episodes of X": match the title in `followed_shows_list`, or take `show_id` from an
+  episode or snip; then `shows_details` or `shows_episodes` (`title_search_term` for a title the user remembers).
+- "What is this episode about?" / "key points": the AI description is in the list; `episodes_ai_summaries` gives
+  the key moments and takeaways; `episodes_details` adds hosts, guests, chapters and mentioned books.
+- Quotes and exact wording from an episode: `transcripts_search` finds the passage; `episodes_transcripts` reads
+  the transcript (Premium; for a long or unlistened episode, check the price with `cost_estimate_only` first when
+  the user may not expect it). Bound the read with `start_seconds`/`end_seconds` when a chapter or a snip points at
+  the minute.
+- Following and unfollowing shows and guests, and changing favorites, change the user's account: say what you are
+  about to change and wait for a clear yes. The app shows the change on its next start or pull-to-refresh.
 - Show positions as `h:mm:ss` or `mm:ss`, dates as dates, durations as `h:mm`.
-
-## Feeds and history
-
-- "My feeds" / "my filters": `filters_list`, then `filters_episodes` with the feed's `id`. `downloaded`
-  cannot be listed from here; say so.
-- "What have I listened to?" / "where was I?": `history_list`; `in_progress_only` for unfinished
-  episodes. `progress` is a fraction of the episode.
 
 ## Working with snips
 
-- Quote a snip with its episode and show, and show positions as `mm:ss`. When the user wants the actual
-  words (a quote, "what did they say", a verbatim passage), call `snips_read_full` for those snips:
-  `snips_list` only carries the note and Snipd's summary. Attribute a quote to the speaker the
-  transcript names, and say when a snip's transcript is not available instead of paraphrasing it.
-- "Recent" means `create_ts`; favorites are `is_favorite`; the names a snip is filed under are `tags`.
-- Pages are cut by snip, so one episode can continue on the next page: fetch all pages before
-  counting or summarising "everything".
-- Reading snips never changes the user's account. Uploads do add episodes: follow the `upload-file`,
-  `upload-youtube-video` and `upload-check-pending` skills for those.
-
-### Deleting and tagging
-
-- Snip ids come from `snips_list`. Resolve what the user described to actual snips first, and name the
-  ones you are about to change ("the three snips from *How to focus*") rather than counting them.
-- `snips_delete` removes snips from the app everywhere. Confirm first, always, and never delete more
-  than the user asked for: when a request is broad ("delete my old snips"), list what matches and let
-  them approve it.
-- Tags are the names the app shows on a snip. `snips_tag` creates the ones that do not exist, so tag
-  in one call rather than creating a tag first; use the name the user used, and reuse an existing tag
-  when it is the same name in different case or spacing (the tools already match that way).
-- `snips_untag` takes a tag off some snips; `snips_remove_tag` deletes the tag itself, everywhere.
-  They are easy to confuse: say which one you are about to do, and confirm the second.
+- Quote a snip with its episode and show, and show positions as `mm:ss`. For the actual words, call `snips_details`:
+  `snips_list` only carries the note. Attribute a quote to the speaker the transcript names, and say when a snip's
+  transcript is not available instead of paraphrasing it.
+- Use the filters rather than reading everything: `tag_id` from `tags_list`, `show_id`, `episode_id`,
+  `created_after`/`created_before`, `is_favorite`. Pages are cut by snip, so one episode can continue on the next
+  page: fetch all pages before counting or summarising "everything".
+- `snips_delete` removes snips from the app everywhere. Confirm first, always, and never delete more than the user
+  asked for: when a request is broad ("delete my old snips"), list what matches and let them approve it.
+- `snips_tag` creates the tags that do not exist, so tag in one call rather than creating a tag first; use the name
+  the user used. `snips_untag` takes a tag off some snips; `tags_delete` deletes the tag itself, everywhere. Say which
+  one you are about to do, and confirm the second.
 - Changes show up in the app the next time it syncs, not instantly.
+
+## Searching transcripts
+
+`transcripts_search` finds where something was said, by meaning rather than exact words, in public shows (private
+feeds and uploads are not included). `scope` is `followed_shows` (default), `listen_history` or `all`. A common use is
+`scope="listen_history"` to find something the user heard on a podcast ("what did that guest say about sleep?"), with
+`first_listen_date_min` / `first_listen_date_max` when they remember roughly when. Use every filter that fits the
+request; the more filters, the better the results usually are:
+
+- `show_ids`, `person_ids` (from `people_search` or an episode's guests), `languages` (two-letter codes);
+- `publish_date_min` / `publish_date_max` and, with `scope="listen_history"`, `first_listen_date_min` /
+  `first_listen_date_max` (`YYYY-MM-DD`, both bounds include the day, UTC);
+- `min_snips` (0, 5, 50, 100, 250, 500, 1000 or 2500) for popular episodes, `min_show_snips` (0, 5, 50, 100, 500,
+  1000, 5000, 10000 or 50000) for popular shows.
+
+It returns up to 20 passages (default 10), best first, overlapping ones merged, at most 4 from any one episode, each
+with its episode, show, `share_url`, speakers, start and end, and the text with timestamps. Cite the episode when you
+use a passage. To read more of one episode, use `episodes_transcripts`.
 
 ## Finding people
 
-Use `people_search` with `search_by="name"` for case-insensitive keyword search
-when you know a person's name. Use `search_by="bio"` for
-embedding-based semantic search by background or expertise, such as "robotics
-founder" or "medical doctor at Stanford". Every signed-in user can use it.
-
-Returns up to 20 people with `person_id`, `name`, `bio` and `total_snips`.
-`min_snips` accepts only 0 (no filter), 5, 50, 100, 250, 500, 1000, 2500 or 5000.
-Use returned person IDs in a moment search's `person_ids` filter to find what
-those people discussed.
-
-## Finding moments in podcasts
-
-Use `subscriptions_search_moments` for a topic across followed public podcasts and
-`listen_history_search_moments` for something discussed in episodes the user listened to.
-These tools require Snipd Premium and use embedding-based semantic search over transcripts: describe the topic,
-idea or moment to find. Only episodes Snipd has AI-processed (including transcription) are searchable.
-
-Request 1–20 chunks (default 10). Expect roughly 18,000 tokens for 10 chunks.
-Results include transcript passages with speakers, timestamps, episode titles, IDs and
-links, plus guest names and person IDs. Overlapping passages are combined.
-Cite the returned episode links when using these passages.
-
-Both tools accept optional `publish_date_min` and `publish_date_max` filters.
-Use `YYYY-MM-DD` dates; both bounds include the supplied day, in UTC.
-For when the user first listened, use `first_listen_date_min` and
-`first_listen_date_max` on `listen_history_search_moments`.
-
-Use `person_ids` to search episodes featuring any of those people as a guest or host.
-Copy a guest's `person_id` from a search result to narrow a follow-up search to that person.
-
-Use `languages` to search episodes in any of those languages, as two-letter codes such as
-`"en"` or `"de"`.
-
-Use `min_snips` for episodes with at least that many snips, a popularity signal. It accepts
-only 0 (no filter), 5, 50, 100, 250, 500, 1000 or 2500. Use `min_show_snips` for shows with at
-least that many snips in total. It accepts only 0 (no filter), 5, 50, 100, 500, 1000, 5000,
-10000 or 50000.
-
-All supplied filters apply together.
+Use `people_search` with `search_by="name"` when you know the person's name, `search_by="bio"` for a background or
+expertise such as "robotics founder" or "medical doctor at Stanford". `min_snips` accepts 0, 5, 50, 100, 250, 500,
+1000, 2500 or 5000. Use the `person_id`s with `transcripts_search` to find what those people said, or with
+`guests_follow`.
 
 ## Sending feedback
 
-Snipd reads the feedback sent with `feedback_submit` to decide what to build next. Offer to send
-it when:
+Snipd reads the feedback sent with `feedback_submit` to decide what to build next. Offer to send it when:
 
-- the user asks for something none of these tools can do ("add this to a playlist", "export my
-  snips to Notion"): say plainly that Snipd cannot do it from here yet, then offer to pass the
-  request on;
+- the user asks for something none of these tools can do ("add this to a playlist", "export my snips to Notion"):
+  say plainly that Snipd cannot do it from here yet, then offer to pass the request on;
 - a tool fails, returns something wrong, or behaves differently from what its description says;
 - the user is frustrated with Snipd here, or suggests an improvement.
 
-Offer once per topic, and do not interrupt a task that is going well. Write the message in the
-user's words: what they wanted to do and what happened, with the tool name when one was involved.
-Leave out private details the feedback does not need. Show the user the exact message and call
-`feedback_submit` only after they agree; afterwards, thank them.
+Offer once per topic, and do not interrupt a task that is going well. Write the message in the user's words: what
+they wanted to do and what happened, with the tool name when one was involved. Leave out private details the feedback
+does not need. Show the user the exact message and call `feedback_submit` only after they agree; afterwards, thank
+them. For anything that needs an answer, point the user to the feedback chat in the Snipd app ("You" → settings →
+"Feedback").

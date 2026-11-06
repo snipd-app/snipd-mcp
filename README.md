@@ -1,16 +1,17 @@
 # Snipd for Claude Code, Codex and other agents
 
 Connect your coding agent to your [Snipd](https://www.snipd.com) account and let it work with your
-podcasts: read, delete and tag your snips and notes, browse and manage the shows you follow, search for
-moments in your subscriptions and listen history, find people by name or bio, open episodes (details,
-transcripts and AI snips), see your feeds and listen history, control your play queue, and upload your
-own audio. This repository is the official install kit for the Snipd MCP server: a Claude Code
+podcasts: read, delete and tag your snips and notes, browse and manage the shows and guests you follow,
+search what was said in podcasts, find people by name or bio, open episodes (AI details, AI summaries and
+transcripts), see your favorites, custom lists, listen history and what is trending, control your play queue,
+and upload your own audio. This repository is the official install kit for the Snipd MCP server: a Claude Code
 plugin, a Codex plugin and eight [Agent Skills](https://agentskills.io) that teach the agent what the
 tools do and how to use them.
 
-The server is remote (nothing runs on your machine). Browsing never changes your account. Actions
-that do include deleting or tagging snips, subscribing or unsubscribing, changing the play queue
-(your devices pick it up within seconds), and adding episodes through uploads or text-to-speech.
+The server is remote (nothing runs on your machine). Browsing never changes your library, though some
+tools spend AI credits (see below). Actions that do change it include deleting or tagging snips, following or
+unfollowing shows and guests, favorites, changing the play queue (your devices pick it up within seconds), and
+adding episodes through uploads or text-to-speech.
 You sign in with your Snipd account in the browser; disconnecting in your agent revokes its access.
 
 - MCP endpoint: `https://mcp.snipd.com/mcp`
@@ -86,51 +87,55 @@ Besides the Snipd MCP server, two skills send data elsewhere, always from the us
 
 ## What the agent can do
 
-| Tool | What it returns |
-|---|---|
-| `account_whoami` | The Snipd account the connection is signed in as. |
-| `snips_list` | Your snips, newest first, grouped by episode with episode and show metadata. Each snip carries its markdown `content` (your note, else the snip's title and summary), its position in the episode, when you saved it, whether it is a favorite and the tags it is filed under. Paged with `limit`/`offset`. |
-| `snips_read_full` | Your snips with their transcript: what is actually said in each one, as speaker turns. Up to 20 at a time, and only for episodes Snipd has processed and your plan lets you read. |
-| `snips_delete` | Deletes snips you point at. They disappear from the app on every device. The agent asks first. |
-| `snips_tag`, `snips_untag` | Files snips under tags, creating the tags that do not exist yet, or takes tags off them. Tags are given by name. |
-| `snips_create_tag`, `snips_remove_tag` | Creates an empty tag, or deletes one from your account: it comes off every snip that carried it, and the snips are kept. The agent asks before deleting one. |
-| `subscriptions_list` | The podcasts you follow, all at once, the one with the newest episode first, each with when you subscribed and whether you get new-episode notifications. |
-| `subscriptions_latest_episodes` | What is new in the podcasts you follow, newest first, leaving out episodes you finished or archived (like the app's Latest feed). Paged. |
-| `subscriptions_search_moments` | Find moments across public podcasts you follow using embedding-based semantic search of episode transcripts. Filter by publication date, people, language or snip count. Requires Snipd Premium. |
-| `listen_history_search_moments` | Find moments across public podcast episodes in your listen history using embedding-based semantic search of their transcripts. Filter by publication date, when you first listened, people, language or snip count. Requires Snipd Premium. |
-| `subscriptions_add`, `subscriptions_remove` | Follow a show by id or RSS feed URL (unknown feeds are imported first), or unfollow shows. The agent asks before calling them. |
-| `people_search` | Find people on public podcasts by name (keyword search) or bio (embedding-based semantic search). Returns up to 20 matches with name, bio, person ID and snip count. |
-| `shows_details`, `shows_episodes` | A show as its page in the app, and its episodes with the app's filters (sort, title search, play status, archived). |
-| `episodes_details`, `episodes_transcript`, `episodes_ai_summaries` | An episode as its page in the app, its transcript as speaker turns (the whole thing, or a window of it), and the AI snips the app shows. AI snips follow the app's AI-access rule: free-for-all episodes, Snipd Premium, or episodes you unlocked in the app. The full transcript follows the app's export rule: Snipd Premium, for episodes you had processed, exported before or listened to enough of. |
-| `filters_list`, `filters_episodes` | Your episode feeds (the app's tabs, standard and custom) and the episodes in one of them. |
-| `history_list` | What you listened to, most recent first, with your progress. |
-| `queue_list`, `queue_add`, `queue_set_current`, `queue_remove` | Your play queue: see it, queue episodes next or last, make one the head of the queue, remove episodes. Your devices pick the changes up within seconds. |
-| `uploads_initiate` | Snipd Premium only. Reserves upload space and returns a signed URL the agent PUTs a local audio/video file to; the file becomes an episode once Snipd has processed it. |
-| `uploads_list` | Pending uploads (uploading, processing, error) and processed ones grouped by folder, plus the upload quota. |
-| `uploads_delete` | Deletes a pending upload. |
-| `uploads_text_to_speech` | Snipd Premium only. Reads text you supply aloud (text-to-speech) and saves the recording as a private episode in your Uploads, with optional speech editing for written articles and a cover image. Estimates the AI credits first; generates only when you confirm. |
-| `feedback_submit` | Sends your feedback about Snipd's tools to the Snipd team, after you approve the message. Your agent offers it when you ask for something Snipd cannot do yet or a tool misbehaves. |
+Some tools cost AI credits, the unit Snipd uses for its AI features: free accounts get 20 per calendar month, Snipd
+Premium includes many more each calendar month (upgrade in the Snipd mobile app, on the "You" screen). Every response
+says what the call cost and what is left; `account_info` shows the balance.
 
-## Filtering moment searches
+| Tool | What it returns | AI credits |
+|---|---|---|
+| `account_info` | The Snipd account the connection is signed in as, its plan and its AI credits. | free |
+| `snips_list` | Your snips, newest first, grouped by episode, each with its note, its position in the episode, when you saved it, whether it is a favorite or an auto snip, and its tags. Filters: date, episode, show, favorite, auto snip, tag. | free |
+| `snips_details` | Your snips with their episode and what is said in them, cut after 7 minutes. | free |
+| `snips_delete`, `snips_tag`, `snips_untag` | Delete snips, file them under tags (missing tags are created) or take tags off them. The agent asks before deleting. | free |
+| `tags_list`, `tags_create`, `tags_delete` | Your tags with their snip counts; create one; delete one everywhere (the snips stay). | free |
+| `followed_shows_list`, `followed_shows_latest_episodes` | The shows you follow, and their episodes with the filters of the app's custom lists (play status, AI-processed only, sorting incl. most snipped). | free |
+| `show_follow`, `show_unfollow` | Follow a show by id or RSS feed URL (unknown feeds are imported first), or unfollow one. The agent asks first. | free |
+| `shows_details`, `shows_episodes` | Shows as their page in the app, and a show's episodes with the app's filters. | free |
+| `episodes_details` | Everything about episodes: the AI description, hosts and guests, chapters, mentioned books, snip count and your progress. | 0.05 per episode |
+| `episodes_ai_summaries` | The AI snips of episodes: the key moments and takeaways. | 1 per episode, free for episodes you had processed |
+| `episodes_transcripts` | Snipd Premium only. The transcript of an episode, whole or a part. | once per episode: 1 per minute, 0.5 if you listened to it, free if you processed or exported it before |
+| `favorite_episodes_list`, `favorite_episodes_add`, `favorite_episodes_remove` | Your favorite episodes. | free |
+| `followed_guests_list`, `guests_follow`, `guests_unfollow`, `followed_guests_latest_episodes` | The guests you follow and the newest episodes they appear in. | free |
+| `listen_history_list` | What you listened to, most recent first, with your progress. | free |
+| `custom_episode_filters_list`, `custom_episode_filters_episodes` | The custom lists you created in the app, and their episodes. | free |
+| `discover_episodes` | The Discover lists: trending, most snipped in the last 30 days, most snipped of all time. | free |
+| `transcripts_search` | Find where something was said in the shows you follow, your listen history or all public shows. | 1 per search |
+| `people_search` | Find people on public podcasts by name or by bio. | free |
+| `queue_list`, `queue_add`, `queue_set_current`, `queue_remove` | Your play queue: see it, queue episodes next or last, make one the head of the queue, remove episodes. Your devices pick the changes up within seconds. | free |
+| `uploads_initiate`, `uploads_list`, `uploads_delete` | Snipd Premium only. Upload a local audio/video file (it becomes an episode once processed), list your uploads and quota, delete a pending one. | AI processing 1 per minute |
+| `uploads_text_to_speech` | Snipd Premium only. Reads text you supply aloud and saves it as a private episode in your Uploads. Estimates the AI credits first; generates only when you confirm. | about 8.5 per 1,000 characters |
+| `feedback_submit` | Sends your feedback about Snipd's tools to the Snipd team, after you approve the message. | free |
 
-Only episodes Snipd has AI-processed (including transcription) are searchable.
+Every episode list adds the AI description, guests and snip count of each episode by default, for 0.05 AI credits per
+episode; the agent turns this off when it only needs titles.
 
-Both search tools accept `query`, `limit` (default 10, maximum 20), and these optional filters:
+## Searching transcripts
 
-- `publish_date_min`, `publish_date_max`: dates use `YYYY-MM-DD` and include the
-  supplied day, in UTC.
-- `person_ids`: matches episodes featuring any listed person as a guest or host.
-  Results include guest names and person IDs so you can narrow a follow-up search
-  to a guest.
-- `languages`: matches episodes in any of these languages, given as two-letter
-  codes such as `"en"` or `"de"`.
+Only episodes Snipd has AI-processed are searchable, in public shows (private feeds and uploads are not included).
+`transcripts_search` accepts `query`, `scope` (`followed_shows`, `listen_history` or `all`), `limit` (default 10,
+maximum 20) and these optional filters. A common use is `scope="listen_history"`, to find something you heard on a
+podcast.
+
+- `show_ids`: only these shows.
+- `publish_date_min`, `publish_date_max`: dates use `YYYY-MM-DD` and include the supplied day, in UTC.
+- `first_listen_date_min`, `first_listen_date_max` (with `scope="listen_history"`): when you first listened.
+- `person_ids`: episodes featuring any listed person as a guest or host.
+- `languages`: episodes in any of these languages, given as two-letter codes such as `"en"` or `"de"`.
 - `min_snips`: only episodes with at least this many snips, a popularity signal.
   Accepts **0, 5, 50, 100, 250, 500, 1000 or 2500**; 0 applies no filter.
 - `min_show_snips`: only shows with at least this many snips in total.
   Accepts **0, 5, 50, 100, 500, 1000, 5000, 10000 or 50000**; 0 applies no filter.
 
-`listen_history_search_moments` also accepts `first_listen_date_min` and
-`first_listen_date_max` to filter by when you first listened to an episode.
 All supplied filters apply together.
 
 ## Finding people
@@ -143,4 +148,4 @@ semantic search. Available to every signed-in Snipd user.
 
 `min_snips` accepts only **0, 5, 50, 100, 250, 500, 1000, 2500 or 5000**;
 0 applies no snip-count filter. Results include the numeric snip count and a
-`person_id` you can pass to the moment-search tools' `person_ids` filter.
+`person_id` you can pass to `transcripts_search`'s `person_ids` filter or to `guests_follow`.

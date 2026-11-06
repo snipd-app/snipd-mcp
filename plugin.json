@@ -1,8 +1,8 @@
 {
   "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
   "name": "snipd",
-  "version": "0.15.0",
-  "description": "Connect your agent to your Snipd account: read, delete and tag your podcast snips and notes, browse and manage the podcasts you follow, search moments in your subscriptions and listen history, find people by name or bio, open episodes (details, transcripts, AI snips), see your feeds and history, control your play queue, and upload your own audio or have text read aloud.",
+  "version": "0.16.0",
+  "description": "Connect your agent to your Snipd account: read, delete and tag your podcast snips and notes, browse and manage the shows and guests you follow, search what was said in podcasts, find people by name or bio, open episodes (AI details, AI summaries, transcripts), see your favorites, custom lists, history and what is trending, control your play queue, and upload your own audio or have text read aloud.",
   "author": {
     "name": "Snipd",
     "url": "https://www.snipd.com"
@@ -27,7 +27,7 @@
       "interface": {
         "displayName": "Snipd",
         "shortDescription": "Your podcasts, snips and queue",
-        "longDescription": "Read the snips you saved in Snipd, with your notes, the AI summaries, the episode and show they come from, and your tags. Browse and manage the podcasts you follow, open any episode (details, transcript and AI snips where you have access), search for moments in your subscriptions and listen history, find people by name or bio, see your feeds and listen history, and control your play queue from your agent; your devices pick the changes up. You can also upload audio files and YouTube videos into their Snipd library, and turn text such as a web article into a private episode read aloud (text-to-speech). Signs in with your Snipd account. Changes to your account (deleting or tagging snips, subscribing, the play queue, uploads) are only made after you confirm them.",
+        "longDescription": "Read the snips you saved in Snipd, with your notes, the episode and show they come from, and your tags. Browse and manage the shows and guests you follow, explore what is trending, open any episode with its AI description, guests, chapters and mentioned books, get its AI summary and its transcript, search what was said in podcasts, find people by name or bio, see your favorites, custom lists and listen history, and control your play queue from your agent; your devices pick the changes up. You can also upload audio files and YouTube videos into your Snipd library, and turn text such as a web article into a private episode read aloud (text-to-speech). Some AI features cost AI credits: free accounts get 20 a month. Signs in with your Snipd account. Changes to your account (deleting or tagging snips, following, favorites, the play queue, uploads) are only made after you confirm them.",
         "developerName": "Snipd",
         "category": "Productivity",
         "capabilities": [
@@ -72,19 +72,19 @@
             {
               "description": "See new episodes from followed podcasts and queue one",
               "prompt": "What's new in the podcasts I follow on Snipd? Queue the newest episode to play next.",
-              "tools_triggered": "subscriptions_latest_episodes, queue_add",
+              "tools_triggered": "followed_shows_latest_episodes, queue_add",
               "expected_behavior": "Lists recent unplayed episodes from the followed podcasts, newest first, then adds the newest one at the front of the play queue and confirms it. The queue in the Snipd app shows it next."
             },
             {
-              "description": "Search moments across followed podcasts (Snipd Premium)",
+              "description": "Search what was said across followed podcasts (1 AI credit)",
               "prompt": "Find moments in the podcasts I follow on Snipd where they talk about sleep.",
-              "tools_triggered": "subscriptions_search_moments",
+              "tools_triggered": "transcripts_search",
               "expected_behavior": "Returns transcript passages about sleep from episodes of followed podcasts, each with the episode, show, timestamp and a link to the moment."
             },
             {
               "description": "Recap the last listened episode with its AI snips",
               "prompt": "What was the last podcast episode I listened to on Snipd, and what were its key points?",
-              "tools_triggered": "history_list, episodes_ai_summaries",
+              "tools_triggered": "listen_history_list, episodes_ai_summaries",
               "expected_behavior": "Names the most recently played episode and show with the listening progress, then summarizes the episode's AI snips as its key points."
             }
           ],
