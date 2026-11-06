@@ -1,6 +1,6 @@
 ---
 name: snipd-connect
-description: Use when the user asks to connect Snipd to this agent, or when the Snipd tools (account_whoami, snips_list, subscriptions_list, queue_list, ...) are missing and the Snipd MCP server must be added and signed in before the snipd or queue skills can be used.
+description: Use when the user asks to connect Snipd to this agent, or when the Snipd tools (account_info, snips_list, followed_shows_list, queue_list, ...) are missing and the Snipd MCP server must be added and signed in before the snipd or queue skills can be used.
 compatibility: Adds the remote Snipd MCP server to the current agent; the user signs in with their Snipd account in the browser.
 metadata:
   mcp-server-url: https://mcp.snipd.com/mcp
@@ -26,7 +26,7 @@ until authentication actually succeeds:
 - If the browser does not open (Codex reports "Browser launch failed"), show the user the
   OAuth URL it printed and ask them to open it. Sign-in needs their Snipd credentials and
   their consent, so it cannot be completed on their behalf.
-- Then confirm the client reports the server as connected — or just call `account_whoami` —
+- Then confirm the client reports the server as connected — or just call `account_info` —
   before telling the user Snipd is ready.
 
 ## Then offer to keep it up to date
