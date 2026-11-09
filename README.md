@@ -3,7 +3,7 @@
 **MCP server URL:** `https://mcp.snipd.com/mcp`
 
 Connect your coding agent to your [Snipd](https://www.snipd.com) account and let it work with your
-podcasts: read, delete and tag your snips and notes, browse and manage the shows and guests you follow,
+podcasts: read, delete and tag your snips, browse and manage the shows and guests you follow,
 search what was said in podcasts, find people by name or bio, open episodes (AI details, AI summaries and
 transcripts), see your favorites, custom lists, listen history and what is trending, control your play queue,
 and upload your own audio. This repository is the official install kit for the Snipd MCP server: a Claude Code
@@ -105,7 +105,7 @@ says what the call cost and what is left; `account_info` shows the balance.
 | Tool | What it returns | AI credits |
 |---|---|---|
 | `account_info` | The Snipd account the connection is signed in as, its plan and its AI credits. | free |
-| `snips_list` | Your snips, newest first, grouped by episode, each with its note, its position in the episode, when you saved it, whether it is a favorite or an auto snip, and its tags. Filters: date, episode, show, favorite, auto snip, tag. | free |
+| `snips_list` | Your snips, newest first, grouped by episode, each with its AI-generated note, its position in the episode, when you saved it, whether it is a favorite or an auto snip, and its tags. Filters: date, episode, show, favorite, auto snip, tag. | free |
 | `snips_details` | Your snips with their episode and what is said in them, cut after 7 minutes. | free |
 | `snips_delete`, `snips_tag`, `snips_untag` | Delete snips, file them under tags (missing tags are created) or take tags off them. The agent asks before deleting. | free |
 | `tags_list`, `tags_create`, `tags_delete` | Your tags with their snip counts; create one; delete one everywhere (the snips stay). | free |
