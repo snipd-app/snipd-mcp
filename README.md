@@ -7,7 +7,7 @@ podcasts: read, delete and tag your snips and notes, browse and manage the shows
 search what was said in podcasts, find people by name or bio, open episodes (AI details, AI summaries and
 transcripts), see your favorites, custom lists, listen history and what is trending, control your play queue,
 and upload your own audio. This repository is the official install kit for the Snipd MCP server: a Claude Code
-plugin, a Codex plugin and eight [Agent Skills](https://agentskills.io) that teach the agent what the
+plugin, a Codex plugin and seven [Agent Skills](https://agentskills.io) that teach the agent what the
 tools do and how to use them.
 
 The server is remote (nothing runs on your machine). Browsing never changes your library, though some
