@@ -12,7 +12,7 @@ tools do and how to use them.
 
 The server is remote (nothing runs on your machine). Browsing never changes your library, though some
 tools spend AI credits (see below). Actions that do change it include deleting or tagging snips, following or
-unfollowing shows and guests, favorites, changing the play queue (your devices pick it up within seconds), and
+unfollowing shows and guests, favorites, changing the play queue, and
 adding episodes through uploads.
 You sign in with your Snipd account in the browser; disconnecting in your agent revokes its access.
 
@@ -122,7 +122,7 @@ says what the call cost and what is left; `account_info` shows the balance.
 | `discover_episodes` | The Discover lists: trending, most snipped in the last 30 days, most snipped of all time. | free |
 | `transcripts_search` | Find where something was said in the shows you follow, your listen history or all public shows. | 1 per search |
 | `people_search` | Find people on public podcasts by name or by bio. | free |
-| `queue_list`, `queue_add`, `queue_set_current`, `queue_remove` | Your play queue: see it, queue episodes next or last, make one the head of the queue, remove episodes. Your devices pick the changes up within seconds. | free |
+| `queue_list`, `queue_add`, `queue_set_current`, `queue_remove` | Your play queue: see it, queue episodes next or last, make one the head of the queue, remove episodes. | free |
 | `uploads_initiate`, `uploads_list`, `uploads_delete` | Snipd Premium only. Upload a local audio/video file (it becomes an episode once processed), list your uploads and quota, delete a pending one. | AI processing 1 per minute |
 | `feedback_submit` | Sends your feedback about Snipd's tools to the Snipd team, after you approve the message. | free |
 
