@@ -71,13 +71,22 @@ Or add the server by hand to your client's MCP configuration:
 
 ### claude.ai and Claude Desktop
 
-Settings → Connectors → **Add custom connector** → URL
-`https://mcp.snipd.com/mcp`.
+1. Open [**Settings → Connectors**](https://claude.ai/settings/connectors).
+2. Click **Add custom connector**.
+3. Name it **Snipd**, enter `https://mcp.snipd.com/mcp` and click **Add**.
+4. Click **Connect** and sign in with your Snipd account.
 
 ### ChatGPT
 
-Settings → Security and login → **Developer mode**, then create a connector with the MCP URL
-above. Available on Plus, Pro, Business, Enterprise and Edu plans (web).
+In ChatGPT on the web:
+
+1. Open [**Plugins**](https://chatgpt.com/plugins) in the sidebar.
+2. Click **Add** in the top right, then **Add custom MCP server**.
+3. Name it **Snipd**.
+4. Under **Connection**, keep **Server URL** and enter `https://mcp.snipd.com/mcp`.
+5. Keep **OAuth**, tick **I understand and want to continue** and click **Create as a plugin**.
+6. Install the plugin and sign in with your Snipd account.
+7. In a chat, type `@` and pick **Snipd**.
 
 ## Services the skills contact
 
