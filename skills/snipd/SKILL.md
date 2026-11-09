@@ -8,7 +8,8 @@ metadata:
 
 # Snipd
 
-Snipd is a podcast app. A "snip" is a moment the user saved from an episode, with its note. The Snipd MCP server
+Snipd is a podcast app. A "snip" is a moment the user saved from an episode, with an AI-generated note (usually a
+title and summary of the moment) that the user can edit. The Snipd MCP server
 exposes the signed-in user's snips and tags, the shows and guests they follow, shows and episodes (with AI
 episode details, AI summaries and transcripts), their favorites, custom lists and listen history, the Discover
 lists, a search through podcast transcripts for what was said (`transcripts_search`), people search, their play queue
@@ -46,7 +47,7 @@ error says what it would cost and how to get more: tell the user.
 | Tool | What it returns |
 |---|---|
 | `account_info` | The signed-in account: username, public name, email, plan, AI credits left, when a Free account's credits reset. |
-| `snips_list(...)` | Snips newest first, grouped by episode. Filters: `created_after`, `created_before`, `episode_id`, `show_id`, `is_favorite`, `is_auto_snip`, `tag_id`. Each snip has `note` (markdown, as the app shows it; `null` when empty), `start_seconds`/`end_seconds`, `create_ts`, `is_favorite`, `is_auto_snip` and its tag titles. `limit` at most 50; page with `next_offset` until it is `null`. |
+| `snips_list(...)` | Snips newest first, grouped by episode. Filters: `created_after`, `created_before`, `episode_id`, `show_id`, `is_favorite`, `is_auto_snip`, `tag_id`. Each snip has `note` (markdown, as the app shows it, usually the AI-generated title and summary; `null` when empty), `start_seconds`/`end_seconds`, `create_ts`, `is_favorite`, `is_auto_snip` and its tag titles. `limit` at most 50; page with `next_offset` until it is `null`. |
 | `snips_details(snip_ids, include_transcript)` | Up to 20 snips with their episode and what is said in them, as speaker turns, cut after 7 minutes. Read these before quoting a snip. The transcript is `null` when the user cannot see the episode's AI content in the app. |
 | `snips_delete`, `snips_tag`, `snips_untag` | Delete snips; file them under tags (missing tags are created); take tags off them. Ask first before deleting. |
 | `tags_list`, `tags_create`, `tags_delete` | The user's tags with `tag_id` and snip count; create one; delete one everywhere (the snips stay). Ask first before deleting. |
