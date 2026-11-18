@@ -41,33 +41,16 @@ If `/reload-plugins` warns that it would re-read the conversation, they can reru
 
 Auto-update is **off by default for third-party marketplaces** like Snipd, so unless the user
 turned it on, they only ever get new versions by running the commands above. Offer it once —
-ask, don't assume, since this changes settings on their machine:
+ask, don't assume:
 
 > Snipd can keep itself up to date — Claude Code would check for a new version shortly after
-> each session starts and update it in the background. Want me to turn that on?
+> each session starts and update it in the background. Want to turn that on?
 
-If they say yes, enable it:
-
-```bash
-python3 - <<'PY'
-import json, pathlib
-p = pathlib.Path.home() / ".claude/plugins/known_marketplaces.json"
-d = json.loads(p.read_text())
-keys = [k for k, v in d.items()
-        if "snipd-mcp" in json.dumps(v).lower() or k in ("snipd", "snipd-app")]
-if not keys:
-    raise SystemExit("No Snipd marketplace found — add it first (see the snipd-connect skill).")
-for k in keys:
-    d[k]["autoUpdate"] = True
-p.write_text(json.dumps(d, indent=2))
-print("auto-update enabled for: " + ", ".join(keys))
-PY
-```
-
-That writes the same setting the interactive toggle does. If it fails, or the user would rather
-click it themselves, give them the equivalent path instead:
+If they say yes, walk them through the toggle; it is theirs to click:
 
 > `/plugin` → **Marketplaces** → select the Snipd marketplace → **Enable auto-update**
+
+Do not edit Claude Code's own files under `~/.claude` to switch it on for them.
 
 Tell them what to expect: it takes effect from their **next** session, where Claude Code checks
 within about ten minutes of startup and updates the plugin on disk. When an update lands they

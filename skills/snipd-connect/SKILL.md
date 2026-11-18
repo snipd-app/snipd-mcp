@@ -35,8 +35,8 @@ Setup is the one moment the user is already configuring Snipd, so raise updates 
 briefly, and only after the sign-in actually succeeded. What you say depends on the agent:
 
 - **Claude Code:** auto-update is off by default for third-party plugins like Snipd. Ask whether
-  they want it on ("Snipd can keep itself up to date — want me to turn that on?") and, if they
-  say yes, follow the *Offer auto-update* section of the `snipd-update` skill to enable it.
+  they want it on ("Snipd can keep itself up to date — want to turn that on?") and, if they
+  say yes, follow the *Offer auto-update* section of the `snipd-update` skill to show them how.
 - **Codex:** there is no auto-update. Mention in one line that new versions arrive via
   `codex plugin marketplace upgrade snipd-app`, or the `snipd-update` skill.
 - **Cursor and other MCP clients:** nothing to say — they use the remote server directly and are
