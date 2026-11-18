@@ -14,7 +14,7 @@ upload, and the episode is built from them: the thumbnail becomes the cover, the
 the transcription. Do the same.
 
 One rule matters: Snipd fills the metadata in from the video itself **only when the upload carries
-none of it**. As soon as you pass one field, only what you pass is used. So pass the full set below,
+none of it**. As soon as you give one field, only what you give is used. So give the full set below,
 or nothing at all.
 
 ## Steps

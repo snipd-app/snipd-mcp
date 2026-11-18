@@ -52,7 +52,7 @@ error says what it would cost and how to get more: tell the user.
 | `snips_delete`, `snips_tag`, `snips_untag` | Delete snips; file them under tags (missing tags are created); take tags off them. Ask first before deleting. |
 | `tags_list`, `tags_create`, `tags_delete` | The user's tags with `tag_id` and snip count; create one; delete one everywhere (the snips stay). Ask first before deleting. |
 | `followed_shows_list` | Every followed show, the one with the newest episode first. |
-| `followed_shows_latest_episodes(...)` | Episodes of the followed shows, newest first by default. Filters as in the app's custom lists: `show_ids`, `play_status` (`not_started`, `in_progress`, `completed`), `ai_processed_only`, `sort` (`newest`, `oldest`, `most_snipped`). `oldest` covers at most 100 followed shows; pass `show_ids` for a user who follows more. |
+| `followed_shows_latest_episodes(...)` | Episodes of the followed shows, newest first by default. Filters as in the app's custom lists: `show_ids`, `play_status` (`not_started`, `in_progress`, `completed`), `ai_processed_only`, `sort` (`newest`, `oldest`, `most_snipped`). `oldest` covers at most 100 followed shows; give `show_ids` for a user who follows more. |
 | `show_follow`, `show_unfollow` | Follow a show by `show_id` or RSS feed URL (unknown feeds are imported first), unfollow one. Ask first. |
 | `shows_details(show_ids)` | Up to 50 shows as their page in the app, with the user's relation to them. |
 | `shows_episodes(show_id, ...)` | One show's episodes, followed or not: `sort`, `title_search_term`, `play_status`, `include_archived`, `ai_processed_only`. |
@@ -135,7 +135,7 @@ expertise such as "robotics founder" or "medical doctor at Stanford". `min_snips
 Snipd reads the feedback sent with `feedback_submit` to decide what to build next. Offer to send it when:
 
 - the user asks for something none of these tools can do ("add this to a playlist", "export my snips to Notion"):
-  say plainly that Snipd cannot do it from here yet, then offer to pass the request on;
+  say plainly that Snipd cannot do it from here yet, then offer to send the request to Snipd;
 - a tool fails, returns something wrong, or behaves differently from what its description says;
 - the user is frustrated with Snipd here, or suggests an improvement.
 
