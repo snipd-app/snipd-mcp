@@ -15,6 +15,10 @@ The `claude` branch is the plugin submitted to Anthropic: `main` without text-to
 `create-podcast-from-web-article` skill, no `uploads_text_to_speech` in the README, the `snipd` skill or any
 manifest). Merge `main` into `claude` after every change and keep the removal.
 
+The `claude` branch also has no `justfile`: the directory refuses scripts from organizations that are not Verified.
+Validate this branch with `claude plugin validate . --strict --profile directory`; the `just` recipes below exist on
+`main` only.
+
 The README is public and for users; keep maintainer notes here.
 
 Clients only pick up a new plugin version when `version` changes in `.claude-plugin/plugin.json`,
@@ -27,7 +31,6 @@ Clients only pick up a new plugin version when `version` changes in `.claude-plu
 | `.mcp.json` | The MCP server both plugins install (Claude Code and Codex read the same `mcpServers` shape) |
 | `plugin.json`, `mcp.json` | The same plugin in the portable [Agent Plugins](https://agent-plugins.org) format that OpenAI's plugin directory (ChatGPT and Codex) reads: `mcp.json` declares the server as `streamable-http` with OAuth (dynamic client registration) and `plugin.json` carries the listing (`extensions.com.openai.interface`). Keep its `interface` identical to the one in `.codex-plugin/plugin.json`: when both exist, the root one wins |
 | `LICENSE` | MIT. Anthropic's directory requires a license file |
-| `justfile` | `just validate` checks the plugin; `just package-openai` builds the ZIP for OpenAI's plugin submission portal |
 | `.claude-plugin/plugin.json`, `.claude-plugin/marketplace.json` | Claude Code plugin and its marketplace. The manifest also carries the Anthropic directory listing fields (`icon`, `documentationUrl`, `supportUrl`, `privacyPolicyUrl`, `termsOfServiceUrl`) |
 | `.codex-plugin/plugin.json`, `.agents/plugins/marketplace.json` | Codex plugin and its marketplace |
 | `skills/snipd/SKILL.md` | Using Snipd: the tools and how to work with snips (reading, deleting, tagging), subscriptions and episodes. Shared by every agent |
