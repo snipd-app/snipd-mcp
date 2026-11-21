@@ -1,0 +1,14 @@
+{
+  "com.openai": {
+    "auth": {
+      "type": "oauth",
+      "client": {
+        "mode": "dcr"
+      },
+      "baseScopes": [
+        "snipd:read",
+        "snipd:write"
+      ]
+    }
+  }
+}

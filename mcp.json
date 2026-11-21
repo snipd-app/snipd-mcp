@@ -3,21 +3,7 @@
   "mcpServers": {
     "snipd": {
       "type": "streamable-http",
-      "url": "https://mcp.snipd.com/mcp",
-      "extensions": {
-        "com.openai": {
-          "auth": {
-            "type": "oauth",
-            "client": {
-              "mode": "dcr"
-            },
-            "baseScopes": [
-              "snipd:read",
-              "snipd:write"
-            ]
-          }
-        }
-      }
+      "url": "https://mcp.snipd.com/mcp"
     }
   }
 }
