@@ -1,5 +1,6 @@
 # Files OpenAI's plugin directory reads: the portable plugin at the ZIP root.
 package_files := "plugin.json mcp.json skills assets LICENSE README.md"
+openai_mcp_auth := ".openai-plugin/mcp-auth.json"
 
 # Validate the plugin: Claude's directory checks plus the rules the manifests must keep in sync.
 validate:
@@ -28,13 +29,22 @@ validate:
 package-openai: validate
     #!/usr/bin/env bash
     set -euo pipefail
-    if [ -n "$(git status --porcelain -- {{package_files}})" ]; then
+    if [ -n "$(git status --porcelain -- {{package_files}} {{openai_mcp_auth}})" ]; then
         echo "Uncommitted changes in the packaged files; commit them first:" >&2
-        git status --short -- {{package_files}} >&2
+        git status --short -- {{package_files}} {{openai_mcp_auth}} >&2
         exit 1
     fi
     version=$(jq -r .version plugin.json)
     mkdir -p dist
     out="dist/snipd-openai-plugin-${version}.zip"
-    git archive --format=zip -o "$out" HEAD {{package_files}}
+    stage=$(mktemp -d "$(pwd)/dist/.package-openai.XXXXXX")
+    trap 'rm -rf "$stage"' EXIT
+    # Keep the OpenAI auth extension out of the marketplace MCP config. Codex
+    # versions with the strict portable parser reject the entire server otherwise.
+    git show HEAD:{{openai_mcp_auth}} > "$stage/auth.json"
+    git show HEAD:mcp.json | jq --slurpfile auth "$stage/auth.json" \
+        '.mcpServers.snipd.extensions = $auth[0]' > "$stage/mcp.json"
+    git archive --format=zip -o "$stage/plugin.zip" HEAD {{package_files}}
+    (cd "$stage" && zip -q plugin.zip mcp.json)
+    mv "$stage/plugin.zip" "$out"
     echo "Built $out from $(git rev-parse --short HEAD)"

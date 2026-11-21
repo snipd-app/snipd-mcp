@@ -16,8 +16,9 @@ Clients only pick up a new plugin version when `version` changes in `.claude-plu
 
 | Path | Used by |
 |---|---|
-| `.mcp.json` | The MCP server both plugins install (Claude Code and Codex read the same `mcpServers` shape) |
-| `plugin.json`, `mcp.json` | The same plugin in the portable [Agent Plugins](https://agent-plugins.org) format that OpenAI's plugin directory (ChatGPT and Codex) reads: `mcp.json` declares the server as `streamable-http` with OAuth (dynamic client registration) and `plugin.json` carries the listing (`extensions.com.openai.interface`). Keep its `interface` identical to the one in `.codex-plugin/plugin.json`: when both exist, the root one wins |
+| `.mcp.json` | Legacy MCP configuration for Claude Code and the Codex compatibility manifest |
+| `plugin.json`, `mcp.json` | The portable [Agent Plugins](https://agent-plugins.org) manifests used by the Codex marketplace and as inputs to the OpenAI directory ZIP. `mcp.json` declares the `streamable-http` endpoint without OpenAI-specific extensions so strict Codex versions can load it. `plugin.json` carries the listing (`extensions.com.openai.interface`). Keep its `interface` identical to the one in `.codex-plugin/plugin.json`: when both exist, the root one wins |
+| `.openai-plugin/mcp-auth.json` | Catalog-only OAuth settings (dynamic client registration and Snipd scopes). `just package-openai` inserts these into the ZIP MCP manifest; the fragment itself is not shipped. |
 | `LICENSE` | MIT. Anthropic's directory requires a license file |
 | `justfile` | `just validate` checks the plugin; `just package-openai` builds the ZIP for OpenAI's plugin submission portal |
 | `.claude-plugin/plugin.json`, `.claude-plugin/marketplace.json` | Claude Code plugin and its marketplace. The manifest also carries the Anthropic directory listing fields (`icon`, `documentationUrl`, `supportUrl`, `privacyPolicyUrl`, `termsOfServiceUrl`) |
