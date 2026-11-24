@@ -7,8 +7,7 @@ podcasts: read, delete and tag your snips, browse and manage the shows and guest
 search what was said in podcasts, find people by name or bio, open episodes (AI details, AI summaries and
 transcripts), see your favorites, custom lists, listen history and what is trending, control your play queue,
 and upload your own audio. This repository is the official install kit for the Snipd MCP server: a Claude Code
-plugin, a Codex plugin and eight [Agent Skills](https://agentskills.io) that teach the agent what the
-tools do and how to use them.
+plugin and a Codex plugin that add the server to your agent.
 
 The server is remote (nothing runs on your machine). Browsing never changes your library, though some
 tools spend AI credits (see below). Actions that do change it include deleting or tagging snips, following or
@@ -23,7 +22,7 @@ You sign in with your Snipd account in the browser; disconnecting in your agent 
 
 ### Claude Code
 
-Plugin (adds the server and the skills, keeps them updated):
+Plugin (adds the server and keeps it updated):
 
 ```bash
 claude plugin marketplace add snipd-app/snipd-mcp
@@ -57,13 +56,7 @@ The sign-in opens in your browser. If it does not, run `codex mcp login snipd`.
 
 ### Cursor, Gemini CLI, GitHub Copilot and other MCP clients
 
-Skills only (the `snipd-connect` skill tells the agent how to add the server for your client):
-
-```bash
-npx skills add snipd-app/snipd-mcp
-```
-
-Or add the server by hand to your client's MCP configuration:
+Add the server to your client's MCP configuration:
 
 ```json
 { "mcpServers": { "snipd": { "url": "https://mcp.snipd.com/mcp" } } }
@@ -87,14 +80,6 @@ In ChatGPT on the web:
 5. Keep **OAuth**, tick **I understand and want to continue** and click **Create as a plugin**.
 6. Install the plugin and sign in with your Snipd account.
 7. In a chat, type `@` and pick **Snipd**.
-
-## Services the skills contact
-
-Besides the Snipd MCP server, two skills send data elsewhere, always from the user's own machine:
-
-- `upload-file` uploads the chosen file to the Google Cloud Storage URL that `uploads_initiate` returns (Snipd's storage).
-- `upload-youtube-video` runs [yt-dlp](https://github.com/yt-dlp/yt-dlp) to read the video's details and download its audio
-  from YouTube, then uploads it to Snipd's storage the same way.
 
 ## What the agent can do
 

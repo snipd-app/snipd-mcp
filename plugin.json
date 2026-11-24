@@ -1,7 +1,7 @@
 {
   "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
   "name": "snipd",
-  "version": "0.16.3",
+  "version": "0.16.4",
   "description": "Access and search millions of podcast transcripts, summaries, and rich metadata. Ask questions, research guests, turn text into audio, and fully control the Snipd podcast app.",
   "author": {
     "name": "Snipd",
@@ -38,7 +38,7 @@
           "Export and organise your snips with transcript, summary and metadata",
           "Follow shows and guests and triage their new episodes",
           "Queue episodes and control the Snipd podcast app",
-          "Upload audio files and YouTube videos",
+          "Upload audio files",
           "Turn text such as a web article into audio"
         ],
         "websiteURL": "https://www.snipd.com/mcp",

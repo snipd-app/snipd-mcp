@@ -22,19 +22,11 @@ Clients only pick up a new plugin version when `version` changes in `.claude-plu
 | `justfile` | `just validate` checks the plugin; `just package-openai` builds the ZIP for OpenAI's plugin submission portal |
 | `.claude-plugin/plugin.json`, `.claude-plugin/marketplace.json` | Claude Code plugin and its marketplace. The manifest also carries the Anthropic directory listing fields (`icon`, `documentationUrl`, `supportUrl`, `privacyPolicyUrl`, `termsOfServiceUrl`) |
 | `.codex-plugin/plugin.json`, `.agents/plugins/marketplace.json` | Codex plugin and its marketplace |
-| `skills/snipd/SKILL.md` | Using Snipd: the tools and how to work with snips (reading, deleting, tagging), subscriptions and episodes. Shared by every agent |
-| `skills/snipd-connect/SKILL.md` | Adding the server to a client and completing the sign-in. Shared by every agent |
-| `skills/queue/SKILL.md` | Seeing and changing the play queue: what is queued or playing, queueing episodes, playing one next or now, removing episodes |
-| `skills/upload-file/SKILL.md` | Uploading a local audio/video file: options, `uploads_initiate`, the PUT, what to tell the user |
-| `skills/upload-youtube-video/SKILL.md` | Same for a YouTube video: yt-dlp (with consent) for metadata (title, channel, description, thumbnail, language) and the audio-only download, upload with the video URL |
-| `skills/upload-check-pending/SKILL.md` | Reporting pending uploads, explaining statuses, cleaning up stuck or failed ones |
-| `skills/create-podcast-from-web-article/SKILL.md` | Extracting a web article and creating a private Snipd podcast, with Snipd's optional speech editing for written articles; shared by Claude, Codex and other Agent Skills clients |
-| `skills/snipd-update/SKILL.md` | Updating the installed plugin, and turning on Claude Code auto-update. Shared by every agent |
-| `skills/*/agents/openai.yaml` | Codex-only sidecars that declare the MCP dependency so Codex offers to install it |
 
 ## Development
 
-Keep at least two skills in the plugin. Codex gives a plugin its own skill root only when the
+The plugin ships no skills: the MCP server's own instructions and tool descriptions cover how to use it.
+If skills come back, ship at least two. Codex gives a plugin its own skill root only when the
 plugin ships two or more skills (`shared_host_alias_roots` in `codex-rs/ext/skills/src/host_aliases.rs`);
 with a single skill the model must expand `<marketplace>/<plugin>/<version>/skills/<skill>/SKILL.md`
 itself and reliably drops a segment, so every session starts with a failed read.
