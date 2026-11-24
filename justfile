@@ -1,5 +1,5 @@
 # Files OpenAI's plugin directory reads: the portable plugin at the ZIP root.
-package_files := "plugin.json mcp.json assets LICENSE README.md"
+package_files := "plugin.json mcp.json assets LICENSE"
 
 # Validate the plugin: Claude's directory checks plus the rules the manifests must keep in sync.
 validate:

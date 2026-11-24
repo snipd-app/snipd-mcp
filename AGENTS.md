@@ -41,6 +41,9 @@ Try the Claude Code plugin with `claude --plugin-dir .`. Inside a checkout, Code
 The [submission portal](https://developers.openai.com/plugins/deploy/submission) takes a ZIP with the
 portable plugin at its root. Build it from the committed files with `just package-openai`; it runs `just validate` first, writes
 `dist/snipd-openai-plugin-<version>.zip` and refuses to run while the packaged files have uncommitted changes.
+The README stays out of the ZIP: the portal does not ask for it, and it describes AI credit prices and upgrading to
+Premium, which OpenAI's [plugin guidelines](https://developers.openai.com/plugins/plugin-guidelines) do not allow in a listing.
+The same guidelines rule out unverifiable claims ("#1", "loved across the world") in the listing text.
 
 The review's test cases (exactly five positive and three negative) live in `plugin.json` under
 `extensions.com.openai.review` and are read-only in the portal; change them there and upload again. The
