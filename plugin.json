@@ -1,8 +1,8 @@
 {
   "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
   "name": "snipd",
-  "version": "0.16.2",
-  "description": "Connect your agent to your Snipd account: read, delete and tag your podcast snips and notes, browse and manage the shows and guests you follow, search what was said in podcasts, find people by name or bio, open episodes (AI details, AI summaries, transcripts), see your favorites, custom lists, history and what is trending, control your play queue, and upload your own audio or have text read aloud.",
+  "version": "0.16.3",
+  "description": "Access and search millions of podcast transcripts, summaries, and rich metadata. Ask questions, research guests, turn text into audio, and fully control the Snipd podcast app.",
   "author": {
     "name": "Snipd",
     "url": "https://www.snipd.com"
@@ -25,21 +25,21 @@
   "extensions": {
     "com.openai": {
       "interface": {
-        "displayName": "Snipd",
-        "shortDescription": "Your podcasts, snips and queue",
-        "longDescription": "Snipd is a podcast app for learning: you save the best moments of episodes as snips, with notes. This plugin brings that knowledge into your agent so you can put it to work. Review and organize your snips with tags, pull quotes and key takeaways into your notes and writing, search what was said in podcasts on any topic, and get the AI summary or transcript of an episode instead of listening to all of it. Keep on top of the shows and guests you follow, your favorites, custom lists and listen history, and line up what to hear next in your play queue; your devices pick the changes up. You can also upload audio files and YouTube videos into your Snipd library, and turn text such as a web article into a private episode read aloud (text-to-speech). Signs in with your Snipd account. Changes to your account (deleting or tagging snips, following, favorites, the play queue, uploads) are only made after you confirm them.",
+        "displayName": "Snipd Podcast App",
+        "shortDescription": "Transcripts, Summaries, Search",
+        "longDescription": "This plugin lets you:\n1. Get transcripts, summaries, and rich metadata such as chapters, guest bios, and popularity scores of millions of podcasts\n2. Search through millions of podcast transcripts or search for episodes, shows, and guests\n3. Control the Snipd podcast app such as queueing episodes, following shows, exporting snips, uploading audio or turning text into audio\n\nUse Cases - without the app\n- Get the main insights of a podcast\n- Ask questions and get answers based on an episode, show or guest\n- Look up something you heard on a podcast\n- Monitor new episodes for specific topics and guests\n- Recommend podcasts based on your interests\n- Enrich your personal knowledge wikis (pkm) with podcast data\n- Research what competitors have revealed on a podcast\n- Discover interesting guests\n- And much more...\n\nUse Cases - with the app\n- Export and organise your snips (=highlights) with transcript, summary, and metadata\n- Triage new episodes and add the best ones to your queue\n- Upload audio files\n- Turn a web article into audio and listen on the app\n- Create custom podcasts on a topic you want to learn more about\n- Create custom notes on a podcast\n- Analyse your listening behaviour over time\n- Find all insights you've ever heard on a certain topic\n- And much more...\n\nWhat is Snipd?\nSnipd is the #1 podcast app for knowledge seekers.\nAvailable on iOS and Android and loved across the world by people who listen to learn.\nThis plugin also works without the Snipd podcast app.",
         "developerName": "Snipd",
         "category": "Productivity",
         "capabilities": [
-          "Read your snips and notes",
-          "Tag and organize your snips",
-          "Browse and manage your subscriptions",
-          "Search moments in your subscriptions and listen history",
-          "Find people by name or bio",
-          "Open episodes: details, transcripts and AI snips",
-          "See your feeds and listen history",
-          "Control your play queue",
-          "Upload audio files and YouTube videos"
+          "Get transcripts, summaries, chapters, guest bios and popularity scores of millions of podcasts",
+          "Search through millions of podcast transcripts",
+          "Search for episodes, shows and guests",
+          "Ask questions about an episode, show or guest",
+          "Export and organise your snips with transcript, summary and metadata",
+          "Follow shows and guests and triage their new episodes",
+          "Queue episodes and control the Snipd podcast app",
+          "Upload audio files and YouTube videos",
+          "Turn text such as a web article into audio"
         ],
         "websiteURL": "https://www.snipd.com/mcp",
         "supportURL": "https://support.snipd.com",
@@ -49,9 +49,9 @@
         "composerIcon": "./assets/snipd-icon-128.png",
         "logo": "./assets/snipd-icon.png",
         "defaultPrompt": [
-          "Show my most recent Snipd snips grouped by episode",
-          "What is new in the podcasts I follow on Snipd?",
-          "Queue the latest episode of my favourite podcast next"
+          "What did Huberman say about morning sunlight?",
+          "Create a weekly briefing with the best insights from the podcasts I follow",
+          "Every Monday, recommend a great episode based on my interests"
         ]
       },
       "review": {

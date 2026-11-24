@@ -1,6 +1,6 @@
 {
   "name": "snipd-app",
-  "interface": { "displayName": "Snipd" },
+  "interface": { "displayName": "Snipd Podcast App" },
   "plugins": [
     {
       "name": "snipd",
